@@ -1,0 +1,48 @@
+services:
+  localgov_openreferral.mapping_information:
+    class: Drupal\localgov_openreferral\MappingInformation
+    arguments: ['@config.factory']
+  serializer.encoder.localgov_openreferral_json:
+    class: Drupal\localgov_openreferral\Encoder\JsonEncoder
+    tags:
+      - { name: encoder, format: openreferral_json }
+  localgov_openreferral.normalizer.taxonomy_term:
+    class: Drupal\localgov_openreferral\Normalizer\TaxonomyTermNormalizer
+    arguments: ['@localgov_openreferral.mapping_information']
+    tags:
+      - { name: normalizer, priority: 11 }
+  localgov_openreferral.normalizer.localgov_facet:
+    class: Drupal\localgov_openreferral\Normalizer\LocalgovFacetNormalizer
+    arguments: ['@localgov_openreferral.mapping_information']
+    tags:
+      - { name: normalizer, priority: 11 }
+  localgov_openreferral.normalizer.content_entity:
+    class: Drupal\localgov_openreferral\Normalizer\ContentEntityNormalizer
+    arguments: ['@localgov_openreferral.mapping_information']
+    tags:
+      - { name: normalizer, priority: 10 }
+  localgov_openreferral.normalizer.list:
+    class: Drupal\localgov_openreferral\Normalizer\ListNormalizer
+    tags:
+      - { name: normalizer, priority: 9 }
+  localgov_openreferral.normalizer.entity_reference_field:
+    class: Drupal\localgov_openreferral\Normalizer\EntityReferenceFieldNormalizer
+    arguments: ['@localgov_openreferral.mapping_information']
+    tags:
+      - { name: normalizer, priority: 10 }
+  localgov_openreferral.normalizer.address_field_item:
+    class: Drupal\localgov_openreferral\Normalizer\AddressFieldItemNormalizer
+    arguments: ['@entity_type.manager']
+    tags:
+      - { name: normalizer, priority: 8 }
+  localgov_openreferral.normalizer.geo_field_item:
+    class: Drupal\localgov_openreferral\Normalizer\GeoFieldItemNormalizer
+    arguments: ['@entity_type.manager']
+    tags:
+      - { name: normalizer, priority: 8 }
+  localgov_openreferral.normalizer.field_item:
+    class: Drupal\localgov_openreferral\Normalizer\FieldItemNormalizer
+    arguments: ['@entity_type.manager']
+    tags:
+      - { name: normalizer, priority: 7 }
+

@@ -1,0 +1,30 @@
+localgov_openreferral.service:
+  path: '/openreferral/v1/services/{service}'
+  defaults:
+    _title: 'A single service'
+    _controller: '\Drupal\localgov_openreferral\Controller\EndpointsController::service'
+  requirements:
+    _permission: 'access content'
+    _format: 'openreferral_json'
+  options:
+    parameters:
+      service:
+        type: entity:node
+
+localgov_openreferral.vocabulary:
+  path: '/openreferral/v1/vocabulary'
+  defaults:
+    _title: 'Vocabularies list'
+    _controller: '\Drupal\localgov_openreferral\Controller\EndpointsController::vocabulary'
+  requirements:
+    _permission: 'access content'
+    _format: 'openreferral_json'
+
+localgov_openreferral.taxonomy:
+  path: '/openreferral/v1/taxonomies'
+  defaults:
+    _title: 'Vocabulary taxonomies list'
+    _controller: '\Drupal\localgov_openreferral\Controller\EndpointsController::taxonomies'
+  requirements:
+    _permission: 'access content'
+    _format: 'openreferral_json'
