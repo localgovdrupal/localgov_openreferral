@@ -129,7 +129,149 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-      filters: {  }
+      filters:
+        openreferral_taxonomy:
+          id: openreferral_taxonomy
+          table: search_api_index_openreferral_services
+          field: openreferral_taxonomy
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: '='
+          value:
+            min: ''
+            max: ''
+            value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: openreferral_taxonomy_op
+            label: Taxonomy
+            description: ''
+            use_operator: false
+            operator: openreferral_taxonomy_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: taxonomy
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              localgov_editor: '0'
+              localgov_author: '0'
+            placeholder: ''
+            min_placeholder: ''
+            max_placeholder: ''
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          plugin_id: search_api_string
+        openreferral_vocabulary:
+          id: openreferral_vocabulary
+          table: search_api_index_openreferral_services
+          field: openreferral_vocabulary
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: '='
+          value:
+            min: ''
+            max: ''
+            value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: openreferral_vocabulary_op
+            label: Vocabulary
+            description: ''
+            use_operator: false
+            operator: openreferral_vocabulary_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: vocabulary
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              localgov_editor: '0'
+              localgov_author: '0'
+            placeholder: ''
+            min_placeholder: ''
+            max_placeholder: ''
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          plugin_id: search_api_string
+        search_api_fulltext:
+          id: search_api_fulltext
+          table: search_api_index_openreferral_services
+          field: search_api_fulltext
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: and
+          value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: search_api_fulltext_op
+            label: 'Fulltext search'
+            description: ''
+            use_operator: false
+            operator: search_api_fulltext_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: text
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              localgov_editor: '0'
+              localgov_author: '0'
+            placeholder: ''
+            expose_fields: false
+            searched_fields_id: search_api_fulltext_searched_fields
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          parse_mode: terms
+          min_length: null
+          fields:
+            - rendered_item
+          plugin_id: search_api_fulltext
       sorts: {  }
       header: {  }
       footer: {  }
@@ -143,6 +285,7 @@ display:
       contexts:
         - 'languages:language_interface'
         - request_format
+        - url
         - url.query_args
         - 'user.node_grants:view'
         - user.permissions
@@ -180,6 +323,7 @@ display:
       contexts:
         - 'languages:language_interface'
         - request_format
+        - url
         - 'user.node_grants:view'
         - user.permissions
       tags:
