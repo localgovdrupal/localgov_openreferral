@@ -44,27 +44,61 @@ class EntityReferenceFieldNormalizer extends NormalizerBase {
    * {@inheritdoc}
    */
   public function normalize($field, $format = NULL, array $context = []) {
+    // There are two types of references in the standard.
+    // One has an intervening 'relationship entity' between the parent and
+    // child.
+    // This is defined in the standard by the property field. So we hard code it
+    // here, if the standard changes, it should be updated.
+    $reference_parent = [
+      'service_at_locations' => 'service',
+      'service_taxonomys' => 'taxonomy',
+    ];
+    // The other links directly to them, and aren't even multiple.
+    $reference_single = [
+      'organization' => 'organization',
+    ];
+
     assert($field instanceof EntityReferenceFieldItemListInterface);
     $attributes = [];
 
     $parent = $field->getEntity();
     $parent_type = $this->mappingInformation->getPublicType($parent->getEntityTypeId(), $parent->bundle());
-    $reference_parent = [
-      'service_at_locations' => 'service',
-      'service_taxonomys' => 'taxonomy',
-    ];
-    $direction = $reference_parent[$context['field']['publicName']] == $parent_type;
+    if (!empty($reference_parent[$context['field']['publicName']])) {
+      $direction = $reference_parent[$context['field']['publicName']] == $parent_type;
 
-    foreach ($field->referencedEntities() as $entity) {
-      $type = $this->mappingInformation->getPublicType($entity->getEntityTypeId(), $entity->bundle());
-      $id = $direction ?
-        $parent->uuid() . '-' . $entity->uuid() :
-        $entity->uuid() . '-' . $parent->uuid();
-      $attribute = ['id' => $id];
-      if (count($context['parents']) < 3) {
-        $attribute[$type] = $this->serializer->normalize($entity, $format, $context);
+      foreach ($field->referencedEntities() as $entity) {
+        $type = $this->mappingInformation->getPublicType($entity->getEntityTypeId(), $entity->bundle());
+        $id = $direction ?
+          $parent->uuid() . '-' . $entity->uuid() :
+          $entity->uuid() . '-' . $parent->uuid();
+        $attribute = ['id' => $id];
+        if (count($context['parents']) < 3) {
+          $attribute[$type] = $this->serializer->normalize($entity, $format, $context);
+        }
+        else {
+          $attribute[$type]['id'] = $entity->uuid();
+        }
+        $attributes[] = $attribute;
       }
-      $attributes[] = $attribute;
+    }
+    elseif (!empty($reference_single[$context['field']['publicName']])) {
+      $entity = reset($field->referencedEntities());
+      if (count($context['parents']) < 3) {
+        $attributes = $this->serializer->normalize($entity, $format, $context);
+      }
+      else {
+        $attributes = $entity->uuid();
+      }
+    }
+    else {
+      foreach ($field->referencedEntities() as $entity) {
+        if (count($context['parents']) < 3) {
+          $attributes[] = $this->serializer->normalize($entity, $format, $context);
+        }
+        else {
+          $attributes[] = ['id' => $entity->uuid()];
+        }
+      }
     }
 
     return $attributes;

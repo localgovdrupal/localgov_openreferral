@@ -5,10 +5,10 @@ namespace Drupal\localgov_openreferral\Controller;
 use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\Core\Entity\FieldableEntityInterface;
+use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
+use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\localgov_openreferral\MappingInformation;
-use Drupal\node\NodeInterface;
 use Drupal\rest\ResourceResponse;
 use Drupal\localgov_openreferral\QueryPagerTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -60,22 +60,20 @@ class EndpointsController extends ControllerBase implements ContainerInjectionIn
   }
 
   /**
-   * Service endpoint.
+   * Single entity endpoint.
    */
-  public function service(NodeInterface $service) {
-    $response = new ResourceResponse($service, 200);
+  public function single(ContentEntityInterface $entity) {
+    $response = new ResourceResponse($entity, 200);
 
-    $response->addCacheableDependency($service);
+    $response->addCacheableDependency($entity);
 
-    if ($service instanceof FieldableEntityInterface) {
-      foreach ($service as $field_name => $field) {
-        /** @var \Drupal\Core\Field\FieldItemListInterface $field */
-        $field_access = $field->access('view', NULL, TRUE);
-        $response->addCacheableDependency($field_access);
+    foreach ($entity as $field_name => $field) {
+      assert($field instanceof FieldItemListInterface);
+      $field_access = $field->access('view', NULL, TRUE);
+      $response->addCacheableDependency($field_access);
 
-        if (!$field_access->isAllowed()) {
-          $service->set($field_name, NULL);
-        }
+      if (!$field_access->isAllowed()) {
+        $entity->set($field_name, NULL);
       }
     }
 

@@ -2,6 +2,11 @@ services:
   localgov_openreferral.mapping_information:
     class: Drupal\localgov_openreferral\MappingInformation
     arguments: ['@config.factory']
+  access_check.localgov_openreferral.type:
+    class: Drupal\localgov_openreferral\Access\OpenreferralType
+    arguments: ['@localgov_openreferral.mapping_information']
+    tags:
+      - { name: access_check, applies_to: _openreferral_type }
   serializer.encoder.localgov_openreferral_json:
     class: Drupal\localgov_openreferral\Encoder\JsonEncoder
     tags:

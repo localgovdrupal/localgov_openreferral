@@ -33,6 +33,7 @@ class MappingInformation {
    */
   public function getPublicType($entity_type, $bundle) {
     $entity_bundle_mapping = [
+      'node.localgov_directories_org' => 'organization',
       'node.localgov_directories_venue' => 'service',
       'localgov_geo.address' => 'location',
       'localgov_directories_facets.facet_type_1' => 'taxonomy',
@@ -51,6 +52,7 @@ class MappingInformation {
    */
   public function getInternalTypes($type) {
     $entity_bundle_mapping = [
+      'node.localgov_directories_org' => 'organization',
       'node.localgov_directories_venue' => 'service',
       'localgov_geo.address' => 'location',
       'localgov_directories_facets.facet_type_1' => 'taxonomy',
@@ -82,6 +84,10 @@ class MappingInformation {
           'fieldName' => 'localgov_location',
           'publicName' => 'service_at_locations',
         ],
+        'title' => [
+          'fieldName' => 'title',
+          'publicName' => 'name',
+        ],
         'body' => [
           'fieldName' => 'body',
           'publicName' => 'description',
@@ -99,6 +105,36 @@ class MappingInformation {
         'localgov_directory_facets_select' => [
           'fieldName' => 'localgov_directory_facets_select',
           'publicName' => 'service_taxonomys',
+        ],
+        'localgov_directory_organisation' => [
+          'fieldName' => 'localgov_directory_organisation',
+          'publicName' => 'organization',
+        ],
+      ];
+    }
+    elseif ($entity_type == 'node' && $bundle == 'localgov_directories_org') {
+      $property_mapping = [
+        'uuid' => [
+          'fieldName' => 'uuid',
+          'publicName' => 'id',
+        ],
+        'title' => [
+          'fieldName' => 'title',
+          'publicName' => 'name',
+        ],
+        'body' => [
+          'fieldName' => 'body',
+          'publicName' => 'description',
+          'property' => 'value',
+        ],
+        'localgov_directory_email' => [
+          'fieldName' => 'localgov_directory_email',
+          'publicName' => 'email',
+        ],
+        'localgov_directory_website' => [
+          'fieldName' => 'localgov_directory_website',
+          'publicName' => 'url',
+          'property' => 'uri',
         ],
       ];
     }
