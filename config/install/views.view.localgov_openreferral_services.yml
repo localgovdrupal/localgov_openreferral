@@ -152,7 +152,7 @@ display:
             operator: openreferral_taxonomy_op
             operator_limit_selection: false
             operator_list: {  }
-            identifier: taxonomy
+            identifier: taxonomy_id
             required: false
             remember: false
             multiple: false

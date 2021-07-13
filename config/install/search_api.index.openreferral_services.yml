@@ -6,6 +6,7 @@ dependencies:
     - core.entity_view_mode.node.directory_index
   module:
     - search_api
+    - localgov_openreferral
     - node
 id: openreferral_services
 name: Services
@@ -13,21 +14,13 @@ description: ''
 read_only: false
 field_settings:
   openreferral_taxonomy:
-    label: Taxonomy
-    property_path: aggregated_field
+    label: 'Open Referral: Taxonomy'
+    property_path: localgov_openreferral_taxonomy
     type: string
-    configuration:
-      type: union
-      fields:
-        - 'entity:node/localgov_directory_facets_select:entity:uuid'
   openreferral_vocabulary:
     label: Vocabulary
-    property_path: aggregated_field
+    property_path: localgov_openreferral_vocabulary
     type: string
-    configuration:
-      type: union
-      fields:
-        - 'entity:node/localgov_directory_facets_select:entity:bundle'
   rendered_item:
     label: 'Rendered HTML output'
     property_path: rendered_item
@@ -61,6 +54,7 @@ processor_settings:
       preprocess_index: -20
       preprocess_query: -20
   language_with_fallback: {  }
+  localgov_openreferral_taxonomy: {  }
   rendered_item: {  }
   stemmer:
     all_fields: false

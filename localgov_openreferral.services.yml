@@ -1,7 +1,7 @@
 services:
   localgov_openreferral.mapping_information:
     class: Drupal\localgov_openreferral\MappingInformation
-    arguments: ['@config.factory']
+    arguments: ['@entity_type.manager']
   access_check.localgov_openreferral.type:
     class: Drupal\localgov_openreferral\Access\OpenreferralType
     arguments: ['@localgov_openreferral.mapping_information']
@@ -11,19 +11,13 @@ services:
     class: Drupal\localgov_openreferral\Encoder\JsonEncoder
     tags:
       - { name: encoder, format: openreferral_json }
-  localgov_openreferral.normalizer.taxonomy_term:
-    class: Drupal\localgov_openreferral\Normalizer\TaxonomyTermNormalizer
-    arguments: ['@localgov_openreferral.mapping_information']
-    tags:
-      - { name: normalizer, priority: 11 }
-  localgov_openreferral.normalizer.localgov_facet:
-    class: Drupal\localgov_openreferral\Normalizer\LocalgovFacetNormalizer
-    arguments: ['@localgov_openreferral.mapping_information']
-    tags:
-      - { name: normalizer, priority: 11 }
   localgov_openreferral.normalizer.content_entity:
     class: Drupal\localgov_openreferral\Normalizer\ContentEntityNormalizer
     arguments: ['@localgov_openreferral.mapping_information']
+    tags:
+      - { name: normalizer, priority: 10 }
+  localgov_openreferral.normalizer.config_entity:
+    class: Drupal\localgov_openreferral\Normalizer\ConfigEntityNormalizer
     tags:
       - { name: normalizer, priority: 10 }
   localgov_openreferral.normalizer.list:

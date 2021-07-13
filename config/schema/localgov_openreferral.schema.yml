@@ -1,0 +1,43 @@
+# Schema for Mapping Configuration for Open Referral.
+
+localgov_openreferral.property_mapping.*.*:
+  type: config_entity
+  label: 'Open Referral entity property mapping'
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    entity_type:
+      type: string
+      label: 'Entity type'
+    bundle:
+      type: string
+      label: 'Bundle'
+    public_type:
+      type: string
+      label: 'Open Referral class type'
+    public_datatype:
+      type: string
+      label: 'Open Referral data type'
+    property_mappings:  
+      type: sequence
+      label: 'Contexts'
+      sequence:
+        type: mapping
+        label: 'Context mapping'
+        mapping:
+          id:
+            type: string
+            label: 'Context name'
+          property_map:
+            type: sequence
+            label: 'Property map'
+            sequence:
+              type: mapping
+              mapping:
+                field_name:
+                  type: string
+                  label: 'Internal Drupal field name'
+                public_name:
+                  type: string
+                  label: 'External Open Referral property name'

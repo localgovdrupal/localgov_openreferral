@@ -45,28 +45,58 @@ class ContentEntityNormalizer extends NormalizerBase {
    * {@inheritdoc}
    */
   public function normalize($entity, $format = NULL, array $context = []) {
-    $property_mapping = $this->mappingInformation->getPropertyMapping($entity->getEntityTypeId(), $entity->bundle());
     $context += [
       'account' => NULL,
     ];
-    $context['parents'][] = $this->mappingInformation->getPublicType($entity->getEntityTypeId(), $entity->bundle());
+    $parent = (!empty($context['parents']) && count($context['parents'])) ? end($context['parents']) : '__root';
+    $openreferral_type = $this->mappingInformation->getPublicType($entity->getEntityTypeId(), $entity->bundle());
+    $context['parents'][] = $openreferral_type;
 
-    $attributes = [];
     $object = TypedDataInternalPropertiesHelper::getNonInternalProperties($entity->getTypedData());
 
-    foreach ($property_mapping as $property) {
-      $field_items = $object[$property['fieldName']];
+    // Called as the entity is referenced in a field.
+    // The field configuration is for only one property.
+    // eg. `term:uuid`.
+    if (!empty($context['field'])) {
+      $field_context = explode(':', $context['field']['field_name'], 2);
+    }
+    if (!empty($field_context[1])) {
+      $field_items = $object[$field_context[1]];
       if ($field_items->access('view', $context['account'])) {
-        $context['field'] = $property;
-        if ($property['publicName'] == '_flatten') {
-          $attributes += $this->serializer->normalize($field_items, $format, $context);
+        $context['field']['field_name'] = $field_context[1];
+        $attributes = $this->serializer->normalize($field_items, $format, $context);
+      }
+    }
+    // Otherwise we iterate over all of the mapped properties for this entity
+    // type.
+    else {
+      $attributes = [];
+      $property_mapping = $this->mappingInformation->getPropertyMapping($entity->getEntityTypeId(), $entity->bundle(), $parent);
+      foreach ($property_mapping as $property) {
+        list($field_name,) = explode(':', $property['field_name'], 2);
+        $field_items = $object[$field_name];
+        if (empty($field_items)) {
+          throw new \Exception('Mapped field "' . $field_name . '" not found on object "' . $entity->getEntityTypeId() . '"');
         }
-        elseif (is_array($property['publicName'])) {
-          $attributes[$property['publicName']] += $this->serializer->normalize($field_items, $format, $context);
+        if ($field_items->access('view', $context['account'])) {
+          $context['field'] = $property;
+          $normalized_field = $this->serializer->normalize($field_items, $format, $context);
+          if ($property['public_name'] == '_flatten') {
+            $attributes += $normalized_field;
+          }
+          elseif (isset($attributes[$property['public_name']]) && is_array($attributes[$property['public_name']])) {
+            $attributes[$property['public_name']] = array_merge($attributes[$property['public_name']], $normalized_field);
+          }
+          else {
+            $attributes[$property['public_name']] = $normalized_field;
+          }
         }
-        else {
-          $attributes[$property['publicName']] = $this->serializer->normalize($field_items, $format, $context);
-        }
+      }
+      // Special case. Taxonomy vocabulary. Unless we add it as a computed or
+      // extra field there's no way of mapping defined vocabulary identifiers
+      // https://developers.openreferraluk.org/UseOfTaxonomies/#curies-to-use
+      if ($openreferral_type == 'taxonomy' && empty($attributes['vocabulary'])) {
+        $attributes['vocabulary'] = $this->mappingInformation->getPublicDataType($entity->getEntityTypeId(), $entity->bundle()) ?? $entity->bundle();
       }
     }
 

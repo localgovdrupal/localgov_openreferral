@@ -7,6 +7,7 @@ use Drupal\Core\Field\FieldItemInterface;
 use Drupal\Core\TypedData\TypedDataInternalPropertiesHelper;
 use Drupal\serialization\Normalizer\NormalizerBase;
 use Drupal\serialization\Normalizer\SerializedColumnNormalizerTrait;
+use function array_intersect_key;
 
 /**
  * Converts the Drupal field item object to open referral value.
@@ -48,11 +49,6 @@ class FieldItemNormalizer extends NormalizerBase {
 
   /**
    * {@inheritdoc}
-   *
-   * This normalizer leaves JSON:API normalizer land and enters the land of
-   * Drupal core's serialization system. That system was never designed with
-   * cacheability in mind, and hence bubbles cacheability out of band. This must
-   * catch it, and pass it to the value object that JSON:API uses.
    */
   public function normalize($field_item, $format = NULL, array $context = []) {
     assert($field_item instanceof FieldItemInterface);
@@ -62,8 +58,11 @@ class FieldItemNormalizer extends NormalizerBase {
       // We normalize each individual value, so each can do their own casting,
       // if needed.
       $field_properties = TypedDataInternalPropertiesHelper::getNonInternalProperties($field_item);
-      if (!empty($context['field']['property'])) {
-        $field_properties = [$context['field']['property'] => $field_properties[$context['field']['property']]];
+      if (!empty($context['field'])) {
+        $context_property = explode(':', $context['field']['field_name'], 3);
+        if (!empty($context_property[1])) {
+          $field_properties = [$context_property[1] => $field_properties[$context_property[1]]];
+        }
       }
       foreach ($field_properties as $property_name => $property) {
         $values[$property_name] = $this->serializer->normalize($property, $format, $context);

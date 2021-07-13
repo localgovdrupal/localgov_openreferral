@@ -56,6 +56,8 @@ class EntityReferenceFieldNormalizer extends NormalizerBase {
     // The other links directly to them, and aren't even multiple.
     $reference_single = [
       'organization' => 'organization',
+      'vocabulary' => 'vocabulary',
+      'parent_id' => 'parent_id',
     ];
 
     assert($field instanceof EntityReferenceFieldItemListInterface);
@@ -63,8 +65,8 @@ class EntityReferenceFieldNormalizer extends NormalizerBase {
 
     $parent = $field->getEntity();
     $parent_type = $this->mappingInformation->getPublicType($parent->getEntityTypeId(), $parent->bundle());
-    if (!empty($reference_parent[$context['field']['publicName']])) {
-      $direction = $reference_parent[$context['field']['publicName']] == $parent_type;
+    if (!empty($reference_parent[$context['field']['public_name']])) {
+      $direction = $reference_parent[$context['field']['public_name']] == $parent_type;
 
       foreach ($field->referencedEntities() as $entity) {
         $type = $this->mappingInformation->getPublicType($entity->getEntityTypeId(), $entity->bundle());
@@ -81,8 +83,9 @@ class EntityReferenceFieldNormalizer extends NormalizerBase {
         $attributes[] = $attribute;
       }
     }
-    elseif (!empty($reference_single[$context['field']['publicName']])) {
-      $entity = reset($field->referencedEntities());
+    elseif (!empty($reference_single[$context['field']['public_name']])) {
+      $refrenced_entities = $field->referencedEntities();
+      $entity = reset($refrenced_entities);
       if (count($context['parents']) < 3) {
         $attributes = $this->serializer->normalize($entity, $format, $context);
       }

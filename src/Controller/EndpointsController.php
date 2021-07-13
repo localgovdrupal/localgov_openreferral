@@ -84,8 +84,13 @@ class EndpointsController extends ControllerBase implements ContainerInjectionIn
    * Vocabularies list endpoint.
    */
   public function vocabulary() {
+    $vocabularies = [];
     $facets = $this->mappingInformation->getInternalTypes('taxonomy');
-    $response = new ResourceResponse(array_column($facets, 'bundle'), 200);
+    foreach ($facets as $facet) {
+      $vocabularies[] = $this->mappingInformation->getPublicDataType($facet['entity_type'], $facet['bundle']) ?? $facet['bundle'];
+    }
+
+    $response = new ResourceResponse($vocabularies, 200);
     // @todo cachable dependency on the configuration?
 
     return $response;
@@ -104,8 +109,9 @@ class EndpointsController extends ControllerBase implements ContainerInjectionIn
 
     $entity_type = $facets_lookup[$vocabulary];
     $taxonomy_query = $this->entityTypeManager()->getStorage($entity_type)->getQuery();
+    $taxonomy_bundle = $this->entityTypeManager()->getStorage($entity_type)->getEntityType()->getKey('bundle');
     assert ($taxonomy_query instanceof QueryInterface);
-    $taxonomy_query->condition('bundle', $vocabulary);
+    $taxonomy_query->condition($taxonomy_bundle, $vocabulary);
     if ($entity_type == 'taxonomy_term') {
       if ($this->request->query->get('root_only')) {
         $taxonomy_query->notExists('parent');
@@ -127,6 +133,7 @@ class EndpointsController extends ControllerBase implements ContainerInjectionIn
 
     $cache_metadata = new CacheableMetadata();
     $cache_metadata->setCacheTags([$entity_type . '_list']);
+    $cache_metadata->setCacheContexts(['url.query_args:vocabulary']);
 
     $response = new ResourceResponse($response_array, 200);
     $response->addCacheableDependency($cache_metadata);

@@ -2,69 +2,95 @@
 
 namespace Drupal\localgov_openreferral;
 
-use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 
 /**
  * Helper service for querying details about Open Referral entity mappings.
  *
- * @todo move arrays to config.
+ * @todo this should now all be moved into the config entity.
  */
 class MappingInformation {
 
   /**
-   * Canfig Factory.
+   * Entity type manager.
    *
-   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected $configFactory;
+  protected $entityTypeManager;
+
+  /**
+   * Mapping information storage.
+   *
+   * @var \Drupal\Core\Entity\EntityStorageInterface
+   */
+  protected $storage;
 
   /**
    * Mapping information constrcutor.
    *
-   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
-   *   Config Factory.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   Entity type manager.
    */
-  public function __construct(ConfigFactoryInterface $config_factory) {
-    $this->configFactory = $config_factory;
+  public function __construct(EntityTypeManagerInterface $entity_type_manager) {
+    $this->entityTypeManager = $entity_type_manager;
+    $this->storage = $this->entityTypeManager->getStorage('localgov_openreferral_mapping');
   }
 
   /**
-   * To trait, or base class.
+   * Get Open Referral type for entity.
+   *
+   * @param string $entity_type
+   *   Entity Type.
+   * @param string $bundle
+   *   Bundle.
+   *
+   * @return string
+   *   Type, for example 'organization' or 'service'.
    */
   public function getPublicType($entity_type, $bundle) {
-    $entity_bundle_mapping = [
-      'node.localgov_directories_org' => 'organization',
-      'node.localgov_directories_venue' => 'service',
-      'localgov_geo.address' => 'location',
-      'localgov_directories_facets.facet_type_1' => 'taxonomy',
-    ];
-
     $type = 'unknown';
-    if (isset($entity_bundle_mapping[$entity_type . '.' . $bundle])) {
-      $type = $entity_bundle_mapping[$entity_type . '.' . $bundle];
+    if ($mapping = $this->storage->load($entity_type . '.' . $bundle)) {
+      $type = $mapping->getPublicType();
     }
 
     return $type;
   }
 
   /**
+   * Get Open Referral data type for entity.
+   *
+   * @param string $entity_type
+   *   Entity Type.
+   * @param string $bundle
+   *   Bundle.
+   *
+   * @return string
+   *   Type, for example 'openActiveActivity'.
+   */
+  public function getPublicDataType($entity_type, $bundle) {
+    $data_type = NULL;
+    if ($mapping = $this->storage->load($entity_type . '.' . $bundle)) {
+      $data_type = $mapping->getPublicDataType();
+    }
+
+    return $data_type;
+  }
+
+  /**
    * Get internal types by Open Referral type.
    */
-  public function getInternalTypes($type) {
-    $entity_bundle_mapping = [
-      'node.localgov_directories_org' => 'organization',
-      'node.localgov_directories_venue' => 'service',
-      'localgov_geo.address' => 'location',
-      'localgov_directories_facets.facet_type_1' => 'taxonomy',
-    ];
-
+  public function getInternalTypes($type, $data_type = '') {
+    $properties = ['public_type' => $type];
+    if ($data_type) {
+      $properties['public_datatype'] = $data_type;
+    }
+    $mappings = $this->storage->loadByProperties($properties);
     $internal_types = [];
-    $entity_types = array_keys($entity_bundle_mapping, $type);
-    foreach ($entity_types as $entity) {
-      list($entity_type, $bundle) = explode('.', $entity);
+    foreach ($mappings as $map) {
       $internal_types[] = [
-        'entity_type' => $entity_type,
-        'bundle' => $bundle,
+        'entity_type' => $map->mappedEntityType(),
+        'bundle' => $map->mappedBundle(),
       ];
     }
     return $internal_types;
@@ -72,127 +98,18 @@ class MappingInformation {
 
   /**
    * Get property mapping.
+   *
+   * @param string $context
+   *   Either `denormalize`, or when normalizing: the direct parent open
+   *   referral entity or `__root`.
    */
-  public function getPropertyMapping($entity_type, $bundle) {
-    if ($entity_type == 'node' && $bundle == 'localgov_directories_venue') {
-      $property_mapping = [
-        'uuid' => [
-          'fieldName' => 'uuid',
-          'publicName' => 'id',
-        ],
-        'localgov_location' => [
-          'fieldName' => 'localgov_location',
-          'publicName' => 'service_at_locations',
-        ],
-        'title' => [
-          'fieldName' => 'title',
-          'publicName' => 'name',
-        ],
-        'body' => [
-          'fieldName' => 'body',
-          'publicName' => 'description',
-          'property' => 'value',
-        ],
-        'localgov_directory_email' => [
-          'fieldName' => 'localgov_directory_email',
-          'publicName' => 'email',
-        ],
-        'localgov_directory_website' => [
-          'fieldName' => 'localgov_directory_website',
-          'publicName' => 'url',
-          'property' => 'uri',
-        ],
-        'localgov_directory_facets_select' => [
-          'fieldName' => 'localgov_directory_facets_select',
-          'publicName' => 'service_taxonomys',
-        ],
-        'localgov_directory_organisation' => [
-          'fieldName' => 'localgov_directory_organisation',
-          'publicName' => 'organization',
-        ],
-      ];
-    }
-    elseif ($entity_type == 'node' && $bundle == 'localgov_directories_org') {
-      $property_mapping = [
-        'uuid' => [
-          'fieldName' => 'uuid',
-          'publicName' => 'id',
-        ],
-        'title' => [
-          'fieldName' => 'title',
-          'publicName' => 'name',
-        ],
-        'body' => [
-          'fieldName' => 'body',
-          'publicName' => 'description',
-          'property' => 'value',
-        ],
-        'localgov_directory_email' => [
-          'fieldName' => 'localgov_directory_email',
-          'publicName' => 'email',
-        ],
-        'localgov_directory_website' => [
-          'fieldName' => 'localgov_directory_website',
-          'publicName' => 'url',
-          'property' => 'uri',
-        ],
-      ];
-    }
-    elseif ($entity_type == 'localgov_geo' && $bundle == 'address') {
-      $property_mapping = [
-        'uuid' => [
-          'fieldName' => 'uuid',
-          'publicName' => 'id',
-        ],
-        'label' => [
-          'fieldName' => 'label',
-          'publicName' => 'name',
-        ],
-        'geo' => [
-          'fieldName' => 'location',
-          'publicName' => '_flatten',
-        ],
-        'postal_address' => [
-          'fieldName' => 'postal_address',
-          'publicName' => 'physical_addresses',
-        ],
-      ];
-    }
-    elseif ($entity_type == 'localgov_directories_facets') {
-      $property_mapping = [
-        'uuid' => [
-          'fieldName' => 'uuid',
-          'publicName' => 'id',
-        ],
-        'title' => [
-          'fieldName' => 'title',
-          'publicName' => 'name',
-        ],
-      ];
-    }
-    elseif ($entity_type == 'taxonomy_term') {
-      $property_mapping = [
-        'uuid' => [
-          'fieldName' => 'uuid',
-          'publicName' => 'id',
-        ],
-        'name' => [
-          'fieldName' => 'name',
-          'publicName' => 'name',
-        ],
-        // @todo parents -- no just in the Normalizer need logic.
-      ];
-    }
-    else {
-      $property_mapping = [
-        'uuid' => [
-          'fieldName' => 'uuid',
-          'publicName' => 'id',
-        ],
-      ];
+  public function getPropertyMapping($entity_type, $bundle, $context) {
+    $mapping = $this->storage->load($entity_type, $bundle);
+    if (empty($mapping)) {
+      return;
     }
 
-    return $property_mapping;
+    return $mapping->getMapping($context);
   }
 
 }
