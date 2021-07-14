@@ -10,6 +10,22 @@ use Drupal\Core\Config\Entity\ConfigEntityInterface;
 interface PropertyMappingInterface extends ConfigEntityInterface {
 
   /**
+   * Get the mapped entity's type id.
+   *
+   * @return string
+   *   Entity Type ID.
+   */
+  public function mappedEntityType(): string;
+
+  /**
+   * Get the mapped entity's bundle id.
+   *
+   * @return string
+   *   Bundle ID.
+   */
+  public function mappedBundle(): string;
+
+  /**
    * Set the Open Referral destination class type.
    *
    * For example 'service', 'organization'.

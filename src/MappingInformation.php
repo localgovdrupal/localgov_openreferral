@@ -104,7 +104,7 @@ class MappingInformation {
    *   referral entity or `__root`.
    */
   public function getPropertyMapping($entity_type, $bundle, $context) {
-    $mapping = $this->storage->load($entity_type, $bundle);
+    $mapping = $this->storage->load($entity_type . '.' . $bundle);
     if (empty($mapping)) {
       return;
     }
