@@ -44,4 +44,15 @@ services:
     arguments: ['@entity_type.manager']
     tags:
       - { name: normalizer, priority: 7 }
-
+  paramconverter.localgov_openreferral.entity_uuid:
+    parent: paramconverter.entity
+    class: Drupal\localgov_openreferral\ParamConverter\EntityUuidConverter
+    calls:
+      - [setLanguageManager, ['@language_manager']]
+    tags:
+      # Priority 10, to ensure it runs before @paramconverter.entity.
+      - { name: paramconverter, priority: 10 }
+  localgov_openreferral.requesttypes:
+    class: Drupal\localgov_openreferral\EventSubscriber\RequestTypes
+    tags:
+      - { name: event_subscriber }
