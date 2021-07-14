@@ -161,4 +161,19 @@ class PropertyMapping extends ConfigEntityBase implements PropertyMappingInterfa
     return isset($this->property_mappings[$context]) ? $this->property_mappings[$context] : $this->property_mappings['default'];
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function calculateDependencies() {
+    parent::calculateDependencies();
+
+    // Create dependency for entity and bundle mapped.
+    $entity_type = \Drupal::entityTypeManager()->getDefinition($this->mappedEntityType());
+    $this->addDependency('module', $entity_type->getProvider());
+    $bundle_config_dependency = $entity_type->getBundleConfigDependency($this->mappedBundle());
+    $this->addDependency($bundle_config_dependency['type'], $bundle_config_dependency['name']);
+
+    return $this;
+  }
+
 }
