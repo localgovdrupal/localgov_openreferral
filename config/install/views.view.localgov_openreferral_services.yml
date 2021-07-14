@@ -9,6 +9,9 @@ dependencies:
     - search_api
     - serialization
     - user
+  enforced:
+    module:
+      - localgov_openreferral
 id: localgov_openreferral_services
 label: 'Open Referral: Services'
 module: views

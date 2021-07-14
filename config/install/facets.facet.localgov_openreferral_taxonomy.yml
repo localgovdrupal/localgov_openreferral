@@ -6,6 +6,9 @@ dependencies:
     - views.view.localgov_openreferral_services
   module:
     - search_api
+  enforced:
+    module:
+      - localgov_openreferral
 id: localgov_openreferral_taxonomy
 name: Taxonomy
 url_alias: taxonomy

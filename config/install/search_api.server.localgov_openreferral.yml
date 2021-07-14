@@ -3,6 +3,9 @@ status: true
 dependencies:
   module:
     - search_api_db
+  enforced:
+    module:
+      - localgov_openreferral
 id: localgov_openreferral
 name: 'Open Referral'
 description: ''

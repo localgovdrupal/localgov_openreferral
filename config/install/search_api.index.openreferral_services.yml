@@ -6,8 +6,10 @@ dependencies:
     - core.entity_view_mode.node.directory_index
   module:
     - search_api
-    - localgov_openreferral
     - node
+  enforced:
+    module:
+      - localgov_openreferral
 id: openreferral_services
 name: Services
 description: ''
