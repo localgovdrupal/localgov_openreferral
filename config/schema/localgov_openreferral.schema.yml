@@ -23,21 +23,15 @@ localgov_openreferral.property_mapping.*.*:
       type: sequence
       label: 'Contexts'
       sequence:
-        type: mapping
-        label: 'Context mapping'
-        mapping:
-          id:
-            type: string
-            label: 'Context name'
-          property_map:
-            type: sequence
-            label: 'Property map'
-            sequence:
-              type: mapping
-              mapping:
-                field_name:
-                  type: string
-                  label: 'Internal Drupal field name'
-                public_name:
-                  type: string
-                  label: 'External Open Referral property name'
+        type: sequence
+        label: 'Context bob mapping'
+        sequence:
+          type: mapping
+          label: 'Field to External map'
+          mapping:
+            field_name:
+              type: string
+              label: 'Internal field name'
+            public_name:
+              type: string
+              label: 'Open Referral name'
