@@ -122,11 +122,13 @@ class AddOrTaxonomyMetadata extends ProcessorPluginBase {
       // @todo incorrect configuration: Log if ≠ EntityReferenceFieldItemList
       //   or/and make sure it's not possible by validating elsewhere?
       foreach ($entity->$field_name->referencedEntities() as $term) {
-        $vocabularies[] = $this->getMappingInformation()->getPublicDataType($term->getEntityTypeId(), $term->getEntityTypeId(), $term->bundle()) ?? $term->bundle();
         $term_map = $this->getMappingInformation()->getPropertyMapping($term->getEntityTypeId(), $term->bundle(), '__root');
-        $term_lookup = array_column($term_map, 'field_name', 'public_name');
-        $id_field = $term->get($term_lookup['id'])->first();
-        $taxonomies[] = $id_field->get($id_field->mainPropertyName())->getValue();
+        if ($term_map) {
+          $vocabularies[] = $this->getMappingInformation()->getPublicDataType($term->getEntityTypeId(), $term->getEntityTypeId(), $term->bundle()) ?? $term->bundle();
+          $term_lookup = array_column($term_map, 'field_name', 'public_name');
+          $id_field = $term->get($term_lookup['id'])->first();
+          $taxonomies[] = $id_field->get($id_field->mainPropertyName())->getValue();
+        }
       }
     }
 
