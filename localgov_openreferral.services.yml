@@ -56,3 +56,7 @@ services:
     class: Drupal\localgov_openreferral\EventSubscriber\RequestTypes
     tags:
       - { name: event_subscriber }
+  localgov_openreferral.pager.parameters:
+    class: Drupal\localgov_openreferral\Pager\PagerParametersDecorator
+    decorates: pager.parameters
+    arguments: ['@localgov_openreferral.pager.parameters.inner', '@request_stack']
