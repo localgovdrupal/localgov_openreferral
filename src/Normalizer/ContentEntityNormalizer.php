@@ -96,7 +96,7 @@ class ContentEntityNormalizer extends NormalizerBase {
       // extra field there's no way of mapping defined vocabulary identifiers
       // https://developers.openreferraluk.org/UseOfTaxonomies/#curies-to-use
       if ($openreferral_type == 'taxonomy' && empty($attributes['vocabulary'])) {
-        $attributes['vocabulary'] = $this->mappingInformation->getPublicDataType($entity->getEntityTypeId(), $entity->bundle()) ?? $entity->bundle();
+        $attributes['vocabulary'] = $this->mappingInformation->getPublicDataType($entity->getEntityTypeId(), $entity->bundle()) ?: $entity->bundle();
       }
     }
 
