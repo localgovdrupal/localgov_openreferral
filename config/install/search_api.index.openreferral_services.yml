@@ -3,10 +3,8 @@ status: true
 dependencies:
   config:
     - search_api.server.localgov_openreferral
-    - core.entity_view_mode.node.directory_index
   module:
     - search_api
-    - node
   enforced:
     module:
       - localgov_openreferral
@@ -30,18 +28,7 @@ field_settings:
     configuration:
       roles:
         anonymous: anonymous
-      view_mode:
-        'entity:node':
-          localgov_directories_venue: directory_index
-datasource_settings:
-  'entity:node':
-    bundles:
-      default: false
-      selected:
-        - localgov_directories_venue
-    languages:
-      default: true
-      selected: {  }
+datasource_settings: {  }
 processor_settings:
   add_url: {  }
   aggregated_field: {  }
