@@ -29,10 +29,7 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
  *     "public_type",
  *     "public_datatype",
  *     "property_mappings"
- *   }
- * )
- *
- * Not implemented...
+ *   },
  *   handlers = {
  *     "list_builder" = "Drupal\localgov_openreferral\PropertyMappingListBuilder",
  *     "form" = {
@@ -42,11 +39,12 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
  *     }
  *   },
  *   links = {
- *     "collection" = "/admin/structure/property-mapping",
- *     "add-form" = "/admin/structure/property-mapping/add",
- *     "edit-form" = "/admin/structure/property-mapping/{property_mapping}",
- *     "delete-form" = "/admin/structure/property-mapping/{property_mapping}/delete"
- *   },
+ *     "collection" = "/admin/config/services/openreferral",
+ *     "add-form" = "/admin/config/services/openreferral/add",
+ *     "edit-form" = "/admin/config/services/openreferral/{localgov_openreferral_mapping}",
+ *     "delete-form" = "/admin/config/services/openreferral/{localgov_openreferral_mapping}/delete"
+ *   }
+ * )
  */
 class PropertyMapping extends ConfigEntityBase implements PropertyMappingInterface {
 
@@ -108,14 +106,14 @@ class PropertyMapping extends ConfigEntityBase implements PropertyMappingInterfa
   /**
    * {@inheritdoc}
    */
-  public function mappedEntityType(): string {
+  public function mappedEntityType():? string {
     return $this->entity_type;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function mappedBundle(): string {
+  public function mappedBundle():? string {
     return $this->bundle;
   }
 
@@ -129,7 +127,7 @@ class PropertyMapping extends ConfigEntityBase implements PropertyMappingInterfa
   /**
    * {@inheritdoc}
    */
-  public function getPublicType(): string {
+  public function getPublicType():? string {
     return $this->public_type;
   }
 
@@ -158,7 +156,7 @@ class PropertyMapping extends ConfigEntityBase implements PropertyMappingInterfa
    * {@inheritdoc}
    */
   public function getMapping(string $context, bool $exact = FALSE): array {
-    return isset($this->property_mappings[$context]) ? $this->property_mappings[$context] : $this->property_mappings['default'];
+    return isset($this->property_mappings[$context]) ? $this->property_mappings[$context] : $this->property_mappings['default'] ?? [];
   }
 
   /**

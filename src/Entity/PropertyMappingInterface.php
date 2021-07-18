@@ -12,18 +12,18 @@ interface PropertyMappingInterface extends ConfigEntityInterface {
   /**
    * Get the mapped entity's type id.
    *
-   * @return string
-   *   Entity Type ID.
+   * @return string|null
+   *   Entity Type ID. Null if a new unset entity.
    */
-  public function mappedEntityType(): string;
+  public function mappedEntityType():? string;
 
   /**
    * Get the mapped entity's bundle id.
    *
-   * @return string
-   *   Bundle ID.
+   * @return string|null
+   *   Bundle ID. Null if a new unset entity.
    */
-  public function mappedBundle(): string;
+  public function mappedBundle():? string;
 
   /**
    * Set the Open Referral destination class type.
@@ -38,10 +38,10 @@ interface PropertyMappingInterface extends ConfigEntityInterface {
   /**
    * Get the Open Referral destination class type.
    *
-   * @return string
-   *   The Open Referral type.
+   * @return string|null
+   *   The Open Referral type. Null if a new unset entity.
    */
-  public function getPublicType(): string;
+  public function getPublicType():? string;
 
   /**
    * Set the Open Referral destination class data type.

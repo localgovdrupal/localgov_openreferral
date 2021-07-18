@@ -28,6 +28,7 @@ field_settings:
     configuration:
       roles:
         anonymous: anonymous
+      view_mode: {  }
 datasource_settings: {  }
 processor_settings:
   add_url: {  }

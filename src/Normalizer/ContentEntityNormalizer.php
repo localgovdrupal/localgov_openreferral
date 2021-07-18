@@ -72,6 +72,7 @@ class ContentEntityNormalizer extends NormalizerBase {
     else {
       $attributes = [];
       $property_mapping = $this->mappingInformation->getPropertyMapping($entity->getEntityTypeId(), $entity->bundle(), $parent);
+      if (!is_array($property_mapping)) { \Drupal::logger('localgov_openreferral')->error('Missing property_mapping: ' . $entity->getEntityTypeId() . '.' . $entity->bundle() . ' : ' . $parent); }
       foreach ($property_mapping as $property) {
         list($field_name,) = explode(':', $property['field_name'], 2);
         $field_items = $object[$field_name];

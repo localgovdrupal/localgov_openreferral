@@ -57,3 +57,35 @@ localgov_openreferral.taxonomy:
   requirements:
     _permission: 'access content'
     _format: 'openreferral_json'
+
+entity.localgov_openreferral_mapping.collection:
+  path: '/admin/config/services/openreferral'
+  defaults:
+    _entity_list: 'localgov_openreferral_mapping'
+    _title: 'Open Referral Entity Mapping configuration'
+  requirements:
+    _permission: 'administer localgov_openreferral_mapping'
+
+entity.localgov_openreferral_mapping.add_form:
+  path: '/admin/config/services/openreferral/add'
+  defaults:
+    _entity_form: 'localgov_openreferral_mapping.add'
+    _title: 'Add an Open Referral mapping'
+  requirements:
+    _permission: 'administer localgov_openreferral_mapping'
+
+entity.localgov_openreferral_mapping.edit_form:
+  path: '/admin/config/services/openreferral/{localgov_openreferral_mapping}'
+  defaults:
+    _entity_form: 'localgov_openreferral_mapping.edit'
+    _title: 'Edit an Open Referral mapping'
+  requirements:
+    _permission: 'administer localgov_openreferral_mapping'
+
+entity.localgov_openreferral_mapping.delete_form:
+  path: '/admin/config/services/openreferral/{localgov_openreferral_mapping}/delete'
+  defaults:
+    _entity_form: 'localgov_openreferral_mapping.delete'
+    _title: 'Delete an Open Referral mapping'
+  requirements:
+          _permission: 'administer localgov_openreferral_mapping'
