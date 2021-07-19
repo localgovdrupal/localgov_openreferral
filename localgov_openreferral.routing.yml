@@ -4,9 +4,9 @@ localgov_openreferral.service:
     _title: 'A single service'
     _controller: '\Drupal\localgov_openreferral\Controller\EndpointsController::single'
   requirements:
-    _permission: 'access content'
     _format: 'openreferral_json'
     _openreferral_type: 'entity:service'
+    _entity_access: 'entity.view'
   options:
     parameters:
       entity:
@@ -18,9 +18,9 @@ localgov_openreferral.organization:
     _title: 'A single organisation'
     _controller: '\Drupal\localgov_openreferral\Controller\EndpointsController::single'
   requirements:
-    _permission: 'access content'
     _format: 'openreferral_json'
     _openreferral_type: 'entity:organization'
+    _entity_access: 'entity.view'
   options:
     parameters:
       entity:
@@ -32,9 +32,9 @@ localgov_openreferral.location:
     _title: 'A single location'
     _controller: '\Drupal\localgov_openreferral\Controller\EndpointsController::single'
   requirements:
-    _permission: 'access content'
     _format: 'openreferral_json'
     _openreferral_type: 'entity:location'
+    _entity_access: 'entity.view'
   options:
     parameters:
       entity:
