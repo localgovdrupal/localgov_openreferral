@@ -36,7 +36,8 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
  *       "add" = "Drupal\localgov_openreferral\Form\PropertyMappingForm",
  *       "edit" = "Drupal\localgov_openreferral\Form\PropertyMappingForm",
  *       "delete" = "Drupal\Core\Entity\EntityDeleteForm"
- *     }
+ *     },
+ *     "storage" = "Drupal\localgov_openreferral\Entity\PropertyMappingStorage"
  *   },
  *   links = {
  *     "collection" = "/admin/config/services/openreferral",

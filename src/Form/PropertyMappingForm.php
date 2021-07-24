@@ -5,7 +5,9 @@ namespace Drupal\localgov_openreferral\Form;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\localgov_openreferral\Event\GenerateEntityMapping;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Property Mapping form.
@@ -22,10 +24,18 @@ class PropertyMappingForm extends EntityForm {
   protected $entityBundleInfo;
 
   /**
+   * Event dispatcher service.
+   *
+   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+   */
+  protected $eventDispatcher;
+
+  /**
    * Class constructor.
    */
-  public function __construct(EntityTypeBundleInfoInterface $entity_bundle_info) {
+  public function __construct(EntityTypeBundleInfoInterface $entity_bundle_info, EventDispatcherInterface $event_dispatcher) {
     $this->entityBundleInfo = $entity_bundle_info;
+    $this->eventDispatcher = $event_dispatcher;
   }
 
   /**
@@ -34,6 +44,7 @@ class PropertyMappingForm extends EntityForm {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('entity_type.bundle.info'),
+      $container->get('event_dispatcher')
     );
   }
 
@@ -44,11 +55,6 @@ class PropertyMappingForm extends EntityForm {
 
     $form = parent::form($form, $form_state);
 
-    $form['id'] = [
-      '#type' => 'markup',
-      '#markup' => $this->entity->id(),
-    ];
-
     if ($this->entity->isNew()) {
       $bundle_info = $this->entityBundleInfo->getAllBundleInfo();
       $form['entity_type'] = [
@@ -57,34 +63,25 @@ class PropertyMappingForm extends EntityForm {
         '#description' => $this->t('Entity type mapped.'),
         '#options' => array_combine(array_keys($bundle_info), array_keys($bundle_info)),
         '#required' => TRUE,
-        '#disabled' => !$this->entity->isNew(),
+        '#weight' => -10,
         '#ajax' => [
-          'callback' => [$this, 'getBundles'],
+          'callback' => '::getBundles',
           'event' => 'change',
           'disable-refocus' => FALSE,
           'wrapper' => 'mapped-bundle',
           'progress' => [
             'type' => 'throbber',
             'message' => NULL,
-           ],
+          ],
         ],
-      ];
-
-      $form['bundle'] = [
-        '#type' => 'select',
-        '#title' => $this->t('Bundle'),
-        '#description' => $this->t('Bundle mapped'),
-        '#options' => ['' => ''],
-        '#required' => TRUE,
-        '#prefix' => '<div id="mapped-bundle">',
-        '#suffix' => '</div>',
-        '#disabled' => !$this->entity->isNew(),
-        // If a value has been previously selected the render array replacement
-        // doesn't reset it, and causes an invalid selection error.
-        '#validated' => TRUE,
       ];
     }
     else {
+      $form['id'] = [
+        '#type' => 'markup',
+        '#markup' => $this->entity->id(),
+      ];
+
       $entity_type = $this->entity->mappedEntityType();
       $form['entity_type'] = [
         '#type' => 'select',
@@ -108,7 +105,7 @@ class PropertyMappingForm extends EntityForm {
     $form['public_type'] = [
       '#type' => 'select',
       '#title' => $this->t('Open Referral type'),
-      '#default_value' => $this->entity->getPublicType(),
+      '#default_value' => $this->entity->getPublicType() ?: NULL,
       // @todo extend this list as we know they normalize fine.
       //   Move to a central location rather than tucked away here.
       '#options' => [
@@ -132,53 +129,172 @@ class PropertyMappingForm extends EntityForm {
       '#size' => 45,
       '#maxlength' => 60,
     ];
+    $form_state->setValue('mapping', $this->entity->getMapping('default'));
+    $form['update-mapping'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('Populate mappings'),
+      '#submit' => ['::populateMapping'],
+      '#ajax' => [
+        'callback' => '::refreshMappingAjax',
+        'event' => 'click',
+        'disable-refocus' => TRUE,
+        'wrapper' => 'mapping-table',
+        'progress' => [
+          'type' => 'throbber',
+          'message' => $this->t('Updated'),
+        ],
+      ],
+    ];
 
-    $form['mapping'] = [
+    $form['mapping-wrapper'] = [
+      '#type' => 'container',
+      '#attributes' => ['id' => 'mapping-table'],
+      '#title' => $this->t('Field mappings'),
+    ];
+    $form['add-row'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('Add row'),
+      '#limit_validation_errors' => [],
+      '#submit' => ['::addRow'],
+      '#ajax' => [
+        'callback' => [$this, 'refreshMappingAjax'],
+        'event' => 'click',
+        'disable-refocus' => TRUE,
+        'wrapper' => 'mapping-table',
+        'progress' => [
+          'type' => 'throbber',
+          'message' => NULL,
+        ],
+      ],
+    ];
+    return $form;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function buildForm(array $form, FormStateInterface $form_state) {
+    $form = parent::buildForm($form, $form_state);
+
+    $user_input = $form_state->getUserInput();
+    if ($this->entity->isNew()) {
+      $bundle_options = ['' => ''];
+      if (!empty($user_input['entity_type'])) {
+        $bundle_info = $this->entityBundleInfo->getAllBundleInfo();
+        $bundle_options = array_combine(array_keys($bundle_info[$user_input['entity_type']]), array_keys($bundle_info[$user_input['entity_type']]));
+      }
+      $form['bundle'] = [
+        '#type' => 'select',
+        '#title' => $this->t('Bundle'),
+        '#description' => $this->t('Bundle mapped'),
+        '#options' => $bundle_options,
+        '#required' => TRUE,
+        '#prefix' => '<div id="mapped-bundle">',
+        '#suffix' => '</div>',
+        '#weight' => -9,
+      ];
+    }
+
+    if (empty($user_input['mapping'])) {
+      $user_input['mapping'] = $this->entity->getMapping('default');
+      $user_input['mapping'][] = [
+        'field_name' => '',
+        'public_name' => '',
+      ];
+    }
+    $form['mapping-wrapper']['mapping'] = [
       '#type' => 'table',
       '#caption' => $this->t('Field mapping'),
       '#header' => [
         $this->t('Drupal field'),
         $this->t('Open Referral property'),
-      ], 
+      ],
     ];
     $delta = 0;
-    foreach ($this->entity->getMapping('default') as $delta => $mapping) {
-      $form['mapping'][$delta]['field_name'] = [
+    foreach ($user_input['mapping'] as $delta => $mapping) {
+      $form['mapping-wrapper']['mapping'][$delta]['field_name'] = [
         '#type' => 'textfield',
         '#title' => $this->t('Drupal field'),
         '#title_display' => 'invisible',
         '#default_value' => $mapping['field_name'],
       ];
-      $form['mapping'][$delta]['public_name'] = [
+      $form['mapping-wrapper']['mapping'][$delta]['public_name'] = [
         '#type' => 'textfield',
         '#title' => $this->t('Open Referral property'),
         '#title_display' => 'invisible',
         '#default_value' => $mapping['public_name'],
       ];
     }
-    $delta++;
-    $form['mapping'][$delta]['field_name'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Drupal field'),
-      '#title_display' => 'invisible',
-    ];
-    $form['mapping'][$delta]['public_name'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Open Referral property'),
-      '#title_display' => 'invisible',
-    ];
 
     return $form;
   }
 
+  /**
+   * AJAX callback: ::buildForm output for 'bundle'.
+   */
   public function getBundles(array &$form, FormStateInterface $form_state) {
-    if ($entity_type = $form_state->getValue('entity_type')) {
-      $bundle_info = $this->entityBundleInfo->getAllBundleInfo();
-      $bundle_options = array_combine(array_keys($bundle_info[$entity_type]), array_keys($bundle_info[$entity_type]));
-      $form['bundle']['#options'] = $bundle_options;
-    }
-
     return $form['bundle'];
+  }
+
+  /**
+   * AJAX callback: ::buildForm output for 'mapping-wrapper'.
+   */
+  public function refreshMappingAjax(array &$form, FormStateInterface $form_state) {
+    return $form['mapping-wrapper'];
+  }
+
+  /**
+   * Submit handler.
+   *
+   * Add suggested mappings for entity fields for Open Referral type.
+   */
+  public function populateMapping(array &$form, FormStateInterface $form_state) {
+    $user_input = $form_state->getUserInput();
+    $event = new GenerateEntityMapping($form_state->getValue('entity_type'), $form_state->getValue('bundle'), $form_state->getValue('public_type'));
+    $event->mapping = array_filter($user_input['mapping'], function ($value) {
+      return !(empty($value['field_name']) && empty($value['public_name']));
+    });
+    $this->eventDispatcher->dispatch($event::GENERATE, $event);
+    $user_input['mapping'] = $event->mapping;
+    $user_input['mapping'][] = [
+      'field_name' => '',
+      'public_name' => '',
+    ];
+    $form_state->setUserInput($user_input);
+    $form_state->setRebuild();
+  }
+
+  /**
+   * Submit handler.
+   *
+   * Add an empty row to the mapping.
+   */
+  public function addRow(array &$form, FormStateInterface $form_state) {
+    $user_input = $form_state->getUserInput();
+    $user_input['mapping'][] = [
+      'field_name' => '',
+      'public_name' => '',
+    ];
+    $form_state->setUserInput($user_input);
+    $form_state->setRebuild();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    parent::validateForm($form, $form_state);
+
+    foreach ($form_state->getUserInput()['mapping'] as $delta => $row) {
+      if (empty($row['field_name']) != empty($row['public_name'])) {
+        if (empty($row['field_name'])) {
+          $form_state->setError($form['mapping-wrapper']['mapping'][$delta]['field_name'], $this->t('Drupal Field name required if mapped to a Open Referral property'));
+        }
+        else {
+          $form_state->setError($form['mapping-wrapper']['mapping'][$delta]['public_name'], $this->t('Open Referral property required, or use "_flatten" if should be included in parent entity directly.'));
+        }
+      }
+    }
   }
 
   /**
@@ -205,7 +321,6 @@ class PropertyMappingForm extends EntityForm {
     $entity = parent::buildEntity($form, $form_state);
 
     $mapping = [];
-    // @todo array filter and validate before it gets here.
     foreach ($form_state->getValue('mapping') as $row) {
       if (!empty($row['field_name']) && !empty($row['public_name'])) {
         $mapping[] = [

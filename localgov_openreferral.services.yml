@@ -56,6 +56,31 @@ services:
     class: Drupal\localgov_openreferral\EventSubscriber\RequestTypes
     tags:
       - { name: event_subscriber }
+  localgov_openreferral.generate_mapping_basic:
+    class: Drupal\localgov_openreferral\EventSubscriber\GenerateMappingBasic
+    arguments: ['@entity_type.manager', '@entity_field.manager', '@entity_type.bundle.info']
+    tags:
+      - { name: event_subscriber }
+  localgov_openreferral.generate_mapping_service:
+    class: Drupal\localgov_openreferral\EventSubscriber\GenerateMappingService
+    arguments: ['@entity_type.manager', '@entity_field.manager', '@entity_type.bundle.info']
+    tags:
+      - { name: event_subscriber }
+  localgov_openreferral.generate_mapping_organization:
+    class: Drupal\localgov_openreferral\EventSubscriber\GenerateMappingOrganization
+    arguments: ['@entity_type.manager', '@entity_field.manager', '@entity_type.bundle.info']
+    tags:
+      - { name: event_subscriber }
+  localgov_openreferral.generate_mapping_location:
+    class: Drupal\localgov_openreferral\EventSubscriber\GenerateMappingLocation
+    arguments: ['@entity_type.manager', '@entity_field.manager', '@entity_type.bundle.info']
+    tags:
+      - { name: event_subscriber }
+  localgov_openreferral.generate_mapping_taxonomy:
+    class: Drupal\localgov_openreferral\EventSubscriber\GenerateMappingTaxonomy
+    arguments: ['@entity_type.manager', '@entity_field.manager', '@entity_type.bundle.info']
+    tags:
+      - { name: event_subscriber }
   localgov_openreferral.pager.parameters:
     class: Drupal\localgov_openreferral\Pager\PagerParametersDecorator
     decorates: pager.parameters
