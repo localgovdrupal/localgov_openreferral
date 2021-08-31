@@ -13,7 +13,7 @@ use Drupal\rest\ResourceResponse;
 use Drupal\localgov_openreferral\QueryPagerTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Translation\Exception\NotFoundResourceException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Returns responses for Open Referral API endpoint routes.
@@ -104,7 +104,7 @@ class EndpointsController extends ControllerBase implements ContainerInjectionIn
     $vocabulary = $this->request->query->get('vocabulary');
     $facets_lookup = array_column($facets, 'entity_type', 'bundle');
     if (!isset($facets_lookup[$vocabulary])) {
-      throw new NotFoundResourceException();
+      throw new NotFoundHttpException();
     }
 
     $entity_type = $facets_lookup[$vocabulary];
