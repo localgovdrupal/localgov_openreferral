@@ -2,7 +2,6 @@
 
 namespace Drupal\localgov_openreferral;
 
-use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 
 /**

@@ -69,6 +69,10 @@ class EntityReferenceFieldNormalizer extends NormalizerBase {
       $direction = $reference_parent[$context['field']['public_name']] == $parent_type;
 
       foreach ($field->referencedEntities() as $entity) {
+        $this->addCacheableDependency($context, $entity);
+        if (!$entity->access('view')) {
+          continue;
+        }
         $type = $this->mappingInformation->getPublicType($entity->getEntityTypeId(), $entity->bundle());
         $id = $direction ?
           $parent->uuid() . '-' . $entity->uuid() :
@@ -85,21 +89,28 @@ class EntityReferenceFieldNormalizer extends NormalizerBase {
     }
     elseif (!empty($reference_single[$context['field']['public_name']])) {
       $refrenced_entities = $field->referencedEntities();
-      $entity = reset($refrenced_entities);
-      if (count($context['parents']) < 3) {
-        $attributes = $this->serializer->normalize($entity, $format, $context);
-      }
-      else {
-        $attributes = $entity->uuid();
+      if ($entity = reset($refrenced_entities)) {
+        $this->addCacheableDependency($context, $entity);
+        if ($entity->access('view')) {
+          if (count($context['parents']) < 3) {
+            $attributes = $this->serializer->normalize($entity, $format, $context);
+          }
+          else {
+            $attributes = $entity->uuid();
+          }
+        }
       }
     }
     else {
       foreach ($field->referencedEntities() as $entity) {
-        if (count($context['parents']) < 3) {
-          $attributes[] = $this->serializer->normalize($entity, $format, $context);
-        }
-        else {
-          $attributes[] = ['id' => $entity->uuid()];
+        $this->addCacheableDependency($context, $entity);
+        if ($entity->access('view')) {
+          if (count($context['parents']) < 3) {
+            $attributes[] = $this->serializer->normalize($entity, $format, $context);
+          }
+          else {
+            $attributes[] = ['id' => $entity->uuid()];
+          }
         }
       }
     }
