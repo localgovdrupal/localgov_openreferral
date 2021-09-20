@@ -90,8 +90,8 @@ class EndpointsController extends ControllerBase implements ContainerInjectionIn
       $vocabularies[] = $this->mappingInformation->getPublicDataType($facet['entity_type'], $facet['bundle']) ?? $facet['bundle'];
     }
 
-    $response = new ResourceResponse($vocabularies, 200);
     // @todo cachable dependency on the configuration?
+    $response = new ResourceResponse($vocabularies, 200);
 
     return $response;
   }
@@ -110,7 +110,7 @@ class EndpointsController extends ControllerBase implements ContainerInjectionIn
     $entity_type = $facets_lookup[$vocabulary];
     $taxonomy_query = $this->entityTypeManager()->getStorage($entity_type)->getQuery();
     $taxonomy_bundle = $this->entityTypeManager()->getStorage($entity_type)->getEntityType()->getKey('bundle');
-    assert ($taxonomy_query instanceof QueryInterface);
+    assert($taxonomy_query instanceof QueryInterface);
     $taxonomy_query->condition($taxonomy_bundle, $vocabulary);
     if ($entity_type == 'taxonomy_term') {
       if ($this->request->query->get('root_only')) {

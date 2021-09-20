@@ -25,11 +25,17 @@ class ResourceTest extends BrowserTestBase {
 
   use NodeCreationTrait;
 
-  // Schema missing:
-  // views.view.localgov_openreferral_services:display.default.display_options.query.options.bypass_access
-  // views.view.localgov_openreferral_services:display.default.display_options.query.options.skip_access
-  // views.view.localgov_openreferral_services:display.default.display_options.query.options.preserve_facet_query_args
-  // views.view.localgov_openreferral_services:display.openreferral_json.display_options.style.options.formats.
+  /**
+   * Schema missing.
+   *
+   * Configuration items:
+   * views.view.localgov_openreferral_services:display.default.display_options.query.options.bypass_access
+   * views.view.localgov_openreferral_services:display.default.display_options.query.options.skip_access
+   * views.view.localgov_openreferral_services:display.default.display_options.query.options.preserve_facet_query_args
+   * views.view.localgov_openreferral_services:display.openreferral_json.display_options.style.options.formats.
+   *
+   * @var bool
+   */
   protected $strictConfigSchema = FALSE;
 
   /**
@@ -37,7 +43,15 @@ class ResourceTest extends BrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['localgov_openreferral', 'entity_test', 'views', 'search_api', 'facets', 'node', 'localgov_geo_address'];
+  protected static $modules = [
+    'localgov_openreferral',
+    'entity_test',
+    'views',
+    'search_api',
+    'facets',
+    'node',
+    'localgov_geo_address',
+  ];
 
   /**
    * {@inheritdoc}
@@ -186,7 +200,6 @@ class ResourceTest extends BrowserTestBase {
     //
     // Organization route.
     //
-
     // Published organization.
     $this->drupalGet(Url::fromRoute('localgov_openreferral.organization', ['entity' => $this->organization->uuid()]));
     $this->assertSession()->statusCodeEquals(200);
@@ -200,7 +213,6 @@ class ResourceTest extends BrowserTestBase {
     //
     // Service route.
     //
-
     // Published service - with referenced unpublished organization.
     $this->drupalGet(Url::fromRoute('localgov_openreferral.service', ['entity' => $this->service->uuid()]));
     $this->assertSession()->statusCodeEquals(200);
@@ -212,7 +224,7 @@ class ResourceTest extends BrowserTestBase {
     $this->drupalGet(Url::fromRoute('localgov_openreferral.service', ['entity' => $this->service->uuid()]));
     $this->assertSession()->statusCodeEquals(200);
     $this->assertSession()->pageTextContains($this->organization->label());
-    
+
     // And unpublish organization again.
     $this->organization->setUnpublished();
     $this->organization->save();

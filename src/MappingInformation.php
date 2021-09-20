@@ -98,6 +98,10 @@ class MappingInformation {
   /**
    * Get property mapping.
    *
+   * @param string $entity_type
+   *   Entity Type ID.
+   * @param string $bundle
+   *   Entity type bundle machine name.
    * @param string $context
    *   Either `denormalize`, or when normalizing: the direct parent open
    *   referral entity or `__root`.

@@ -7,15 +7,20 @@ use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Tests decorated Pager Parameters.
- * 
+ *
  * @group localgov_openreferral
  */
 class RequestPagerTest extends CoreRequestPagerTest {
 
+  /**
+   * Modules to install.
+   *
+   * @var array
+   */
   protected static $modules = ['localgov_openreferral'];
 
   /**
-   * Test decoration of ::findPage
+   * Test decoration of ::findPage.
    */
   public function testOpenreferralFindPage() {
     $request = Request::create('http://example.com/openreferral/v1/services', 'GET', ['page' => '1,10']);

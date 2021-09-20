@@ -5,7 +5,6 @@ namespace Drupal\localgov_openreferral\EventSubscriber;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\TypedData\FieldItemDataDefinitionInterface;
 use Drupal\localgov_openreferral\Entity\PropertyMapping;
@@ -169,6 +168,17 @@ abstract class GenerateMappingBase implements EventSubscriberInterface {
     return $suggestion;
   }
 
+  /**
+   * Get suggestion for a reference field.
+   *
+   * @param \Drupal\Core\Field\FieldDefinitionInterface $field
+   *   The field.
+   * @param array $reference_types
+   *   Reference field type and mapping property name.
+   *
+   * @return array
+   *   Suggestion if matched.
+   */
   protected function fieldSuggestionsReference(FieldDefinitionInterface $field, array $reference_types) {
     $field_name = $field->getName();
     $data_type = $field->getItemDefinition()->getDataType();

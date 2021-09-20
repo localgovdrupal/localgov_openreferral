@@ -4,7 +4,6 @@ namespace Drupal\localgov_openreferral\Normalizer;
 
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
 use Drupal\serialization\Normalizer\NormalizerBase;
-use function array_intersect_key;
 
 /**
  * Normalizes/denormalizes Drupal config entity objects into an array structure.

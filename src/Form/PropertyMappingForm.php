@@ -109,10 +109,10 @@ class PropertyMappingForm extends EntityForm {
       // @todo extend this list as we know they normalize fine.
       //   Move to a central location rather than tucked away here.
       '#options' => [
-        'organization' => 'organization',
-        'service' => 'service',
-        'location' => 'location',
-        'taxonomy' => 'taxonomy',
+        'organization' => $this->t('organization'),
+        'service' => $this->t('service'),
+        'location' => $this->t('location'),
+        'taxonomy' => $this->t('taxonomy'),
       ],
       '#required' => TRUE,
     ];

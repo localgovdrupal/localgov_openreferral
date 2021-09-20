@@ -7,7 +7,6 @@ use Drupal\Core\Field\FieldItemInterface;
 use Drupal\Core\TypedData\TypedDataInternalPropertiesHelper;
 use Drupal\serialization\Normalizer\NormalizerBase;
 use Drupal\serialization\Normalizer\SerializedColumnNormalizerTrait;
-use function array_intersect_key;
 
 /**
  * Converts the Drupal field item object to open referral value.

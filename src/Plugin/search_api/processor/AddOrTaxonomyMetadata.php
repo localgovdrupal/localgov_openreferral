@@ -68,7 +68,6 @@ class AddOrTaxonomyMetadata extends ProcessorPluginBase {
     return $this;
   }
 
-
   /**
    * {@inheritdoc}
    */
@@ -112,8 +111,11 @@ class AddOrTaxonomyMetadata extends ProcessorPluginBase {
     }
 
     // Item is an entity we have a mapping for.
-    $taxonomy_properties = array_filter($property_mapping, function($map) {
-      return in_array($map['public_name'], ['service_taxonomys', 'link_taxonomy']);
+    $taxonomy_properties = array_filter($property_mapping, function ($map) {
+      return in_array($map['public_name'], [
+        'service_taxonomys',
+        'link_taxonomy',
+      ]);
     });
 
     $vocabularies = [];

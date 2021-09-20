@@ -3,7 +3,6 @@
 namespace Drupal\localgov_openreferral\Access;
 
 use Drupal\Core\Access\AccessResult;
-use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Routing\Access\AccessInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\localgov_openreferral\MappingInformation;

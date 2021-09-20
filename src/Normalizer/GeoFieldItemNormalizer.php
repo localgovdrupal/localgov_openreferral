@@ -7,7 +7,7 @@ use Drupal\Core\Field\FieldItemInterface;
 use Drupal\serialization\Normalizer\SerializedColumnNormalizerTrait;
 
 /**
- * Converts the Drupal field item object to open referral value. 
+ * Converts the Drupal field item object to open referral value.
  */
 class GeoFieldItemNormalizer extends FieldItemNormalizer {
 
