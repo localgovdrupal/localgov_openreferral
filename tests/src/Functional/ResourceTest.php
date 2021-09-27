@@ -36,7 +36,7 @@ class ResourceTest extends BrowserTestBase {
    *
    * @var bool
    */
-  protected $strictConfigSchema = FALSE;
+  protected $strictConfigSchema = TRUE;
 
   /**
    * Modules to install.
