@@ -26,19 +26,6 @@ class ResourceTest extends BrowserTestBase {
   use NodeCreationTrait;
 
   /**
-   * Schema missing.
-   *
-   * Configuration items:
-   * views.view.localgov_openreferral_services:display.default.display_options.query.options.bypass_access
-   * views.view.localgov_openreferral_services:display.default.display_options.query.options.skip_access
-   * views.view.localgov_openreferral_services:display.default.display_options.query.options.preserve_facet_query_args
-   * views.view.localgov_openreferral_services:display.openreferral_json.display_options.style.options.formats.
-   *
-   * @var bool
-   */
-  protected $strictConfigSchema = TRUE;
-
-  /**
    * Modules to install.
    *
    * @var array

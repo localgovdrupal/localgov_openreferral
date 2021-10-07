@@ -35,3 +35,11 @@ localgov_openreferral.property_mapping.*.*:
             public_name:
               type: string
               label: 'Open Referral name'
+
+views.display.openreferral_serializer:
+  type: views.display.rest_export
+  label: 'OpenReferral Serializer options'
+
+views.style.openreferral_serializer:
+  type: views.style.serializer
+  label: 'Open Referral Serialized output format'
