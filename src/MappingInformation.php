@@ -105,11 +105,14 @@ class MappingInformation {
    * @param string $context
    *   Either `denormalize`, or when normalizing: the direct parent open
    *   referral entity or `__root`.
+   *
+   * @return array
+   *   Mapped properties, or empty if none.
    */
   public function getPropertyMapping($entity_type, $bundle, $context) {
     $mapping = $this->storage->load($entity_type . '.' . $bundle);
     if (empty($mapping)) {
-      return;
+      return [];
     }
 
     return $mapping->getMapping($context);
