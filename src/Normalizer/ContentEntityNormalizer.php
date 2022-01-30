@@ -17,7 +17,7 @@ class ContentEntityNormalizer extends NormalizerBase {
    *
    * @var array
    */
-  protected $formats = ['openreferral_json'];
+  protected $format = ['openreferral_json'];
 
   /**
    * {@inheritdoc}
