@@ -15,7 +15,7 @@ class ConfigEntityNormalizer extends NormalizerBase {
    *
    * @var array
    */
-  protected $formats = ['openreferral_json'];
+  protected $format = ['openreferral_json'];
 
   /**
    * {@inheritdoc}
@@ -29,7 +29,7 @@ class ConfigEntityNormalizer extends NormalizerBase {
     $attributes = static::getDataWithoutInternals($object->toArray());
 
     if (!empty($context['field'])) {
-      list(, $field_properties) = explode(':', $context['field']['field_name'], 2);
+      [, $field_properties] = explode(':', $context['field']['field_name'], 2);
     }
     if (!empty($field_properties)) {
       $attributes = $attributes[$field_properties];

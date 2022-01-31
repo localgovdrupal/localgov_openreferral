@@ -17,7 +17,7 @@ class ContentEntityNormalizer extends NormalizerBase {
    *
    * @var array
    */
-  protected $formats = ['openreferral_json'];
+  protected $format = ['openreferral_json'];
 
   /**
    * {@inheritdoc}
@@ -73,7 +73,7 @@ class ContentEntityNormalizer extends NormalizerBase {
       $attributes = [];
       $property_mapping = $this->mappingInformation->getPropertyMapping($entity->getEntityTypeId(), $entity->bundle(), $parent);
       foreach ($property_mapping as $property) {
-        list($field_name,) = explode(':', $property['field_name'], 2);
+        [$field_name] = explode(':', $property['field_name'], 2);
         $field_items = $object[$field_name];
         if (empty($field_items)) {
           throw new \Exception('Mapped field "' . $field_name . '" not found on object "' . $entity->getEntityTypeId() . '"');

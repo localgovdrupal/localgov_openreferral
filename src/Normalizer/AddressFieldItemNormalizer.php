@@ -18,7 +18,7 @@ class AddressFieldItemNormalizer extends FieldItemNormalizer {
    *
    * @var array
    */
-  protected $formats = ['openreferral_json'];
+  protected $format = ['openreferral_json'];
 
   /**
    * The interface or class that this Normalizer supports.
