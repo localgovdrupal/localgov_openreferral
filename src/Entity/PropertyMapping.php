@@ -157,7 +157,7 @@ class PropertyMapping extends ConfigEntityBase implements PropertyMappingInterfa
    * {@inheritdoc}
    */
   public function getMapping(string $context, bool $exact = FALSE): array {
-    return isset($this->property_mappings[$context]) ? $this->property_mappings[$context] : $this->property_mappings['default'] ?? [];
+    return $this->property_mappings[$context] ?? $this->property_mappings['default'] ?? [];
   }
 
   /**
