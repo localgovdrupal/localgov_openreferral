@@ -42,7 +42,7 @@ class OpenreferralType implements AccessInterface {
    *   The access result.
    */
   public function access(Route $route, RouteMatchInterface $route_match) {
-    list($parameter, $type) = explode(':', $route->getRequirement('_openreferral_type'));
+    [$parameter, $type] = explode(':', $route->getRequirement('_openreferral_type'));
 
     $parameters = $route_match->getParameters();
     if ($parameters->has($parameter)) {
