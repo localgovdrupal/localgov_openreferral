@@ -20,7 +20,7 @@ class ListNormalizer extends SerializerListNormalizer {
    *
    * @var array
    */
-  protected $formats = ['openreferral_json'];
+  protected $format = ['openreferral_json'];
 
   /**
    * {@inheritdoc}
