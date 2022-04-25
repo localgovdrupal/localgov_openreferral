@@ -33,7 +33,7 @@ trait QueryPagerTrait {
     $this->pager['limit'] = $per_page;
 
     $count_query = clone $query;
-    $this->pager['total'] = $count_query->count()->execute();
+    $this->pager['total'] = $count_query->count()->accessCheck(TRUE)->execute();
     $this->pager['start'] = $this->pager['page'] * $this->pager['limit'];
 
     $query->range($this->pager['start'], $this->pager['limit']);

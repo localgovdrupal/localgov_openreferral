@@ -56,6 +56,11 @@ services:
     class: Drupal\localgov_openreferral\EventSubscriber\RequestTypes
     tags:
       - { name: event_subscriber }
+  localgov_openreferral.exception_subscriber:
+    class: Drupal\localgov_openreferral\EventSubscriber\DefaultExceptionSubscriber
+    tags:
+      - { name: event_subscriber }
+    arguments: ['@serializer', '%serializer.formats%']
   localgov_openreferral.generate_mapping_basic:
     class: Drupal\localgov_openreferral\EventSubscriber\GenerateMappingBasic
     arguments: ['@entity_type.manager', '@entity_field.manager', '@entity_type.bundle.info']
