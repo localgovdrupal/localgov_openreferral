@@ -17,7 +17,7 @@ class RequestPagerTest extends CoreRequestPagerTest {
    *
    * @var array
    */
-  protected static $modules = ['localgov_openreferral'];
+  protected static $modules = ['localgov_openreferral', 'serialization'];
 
   /**
    * Test decoration of ::findPage.
