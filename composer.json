@@ -8,6 +8,6 @@
         "drupal/core": "^9.1",
         "drupal/search_api": "^1.17",
         "drupal/facets": "^2.0",
-        "localgovdrupal/localgov_geo": "^1.0"
+        "localgovdrupal/localgov_geo": "dev-feature/drupal-10 as 1.3.0"
     }
 }
