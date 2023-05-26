@@ -6,10 +6,10 @@ name: Test localgovdrupal/localgov_openreferral drupal-module
 on:
   push:
     branches:
-      - '1.x'
+      - '2.x'
   pull_request:
     branches:
-      - '1.x'
+      - '2.x'
 
 env:
   LOCALGOV_DRUPAL_PROJECT: localgovdrupal/localgov_openreferral
