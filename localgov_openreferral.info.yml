@@ -10,4 +10,4 @@ dependencies:
   - search_api:search_api
   - search_api:search_api_db
   - facets:facets
-  - localgov_geo:localgov_geo_address
+  - geo_entity:geo_entity_address

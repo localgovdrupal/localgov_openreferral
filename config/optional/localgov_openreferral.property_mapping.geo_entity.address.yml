@@ -1,8 +1,8 @@
 langcode: en
 status: true
 dependencies: {  }
-id: localgov_geo.address
-entity_type: localgov_geo
+id: geo_entity.address
+entity_type: geo_entity
 bundle: address
 public_type: location
 public_datatype: null
