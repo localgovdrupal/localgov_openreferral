@@ -95,6 +95,41 @@ class ResourceTest extends BrowserTestBase {
   protected $entity;
 
   /**
+   * Organization Type node for testing.
+   *
+   * @var \Drupal\node\Entity\NodeType
+   */
+  protected $organizationType;
+
+  /**
+   * Organization node for testing.
+   *
+   * @var \Drupal\node\Entity\Node
+   */
+  protected $organization;
+
+  /**
+   * Location Geo Entity for testing.
+   *
+   * @var \Drupal\geo_entity\Entity\GeoEntity
+   */
+  protected $location;
+
+  /**
+   * Service Type node for testing.
+   *
+   * @var \Drupal\node\Entity\NodeType
+   */
+  protected $serviceType;
+
+  /**
+   * Service node for testing.
+   *
+   * @var \Drupal\node\Entity\Node
+   */
+  protected $service;
+
+  /**
    * {@inheritdoc}
    */
   protected function setUp(): void {
