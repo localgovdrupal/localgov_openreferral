@@ -115,7 +115,7 @@ class AddOrTaxonomyMetadata extends ProcessorPluginBase {
       return in_array($map['public_name'], [
         'service_taxonomys',
         'link_taxonomy',
-      ]);
+      ], TRUE);
     });
 
     $vocabularies = [];

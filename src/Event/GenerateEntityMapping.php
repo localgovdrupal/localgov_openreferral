@@ -117,8 +117,8 @@ class GenerateEntityMapping extends Event {
     $existing_public_names = array_column($this->mapping, 'public_name');
     foreach ($suggestions as $suggestion) {
       if (
-        (!in_array($suggestion['field_name'], $existing_field_names))
-        && (!in_array($suggestion['public_name'], $existing_public_names))
+        (!in_array($suggestion['field_name'], $existing_field_names, TRUE))
+        && (!in_array($suggestion['public_name'], $existing_public_names, TRUE))
       ) {
         $this->mapping[] = $suggestion;
       }
