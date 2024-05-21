@@ -13,10 +13,8 @@ class JsonEncoder extends BaseJsonEncoder {
 
   /**
    * The formats that this Encoder supports.
-   *
-   * @var string
    */
-  protected static $format = ['openreferral_json'];
+  public const FORMAT = 'openreferral_json';
 
   /**
    * {@inheritdoc}
@@ -33,15 +31,15 @@ class JsonEncoder extends BaseJsonEncoder {
   /**
    * {@inheritdoc}
    */
-  public function supportsEncoding($format): bool {
-    return in_array($format, static::$format);
+  public function supportsEncoding(string $format): bool {
+    return self::FORMAT === $format;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function supportsDecoding($format): bool {
-    return in_array($format, static::$format);
+  public function supportsDecoding(string $format): bool {
+    return self::FORMAT === $format;
   }
 
 }
