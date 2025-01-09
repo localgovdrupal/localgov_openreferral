@@ -286,7 +286,7 @@ class PropertyMappingForm extends EntityForm {
     parent::validateForm($form, $form_state);
 
     foreach ($form_state->getUserInput()['mapping'] as $delta => $row) {
-      if (($row['field_name'] === '')  !== ($row['public_name'] === '')) {
+      if (($row['field_name'] === '') !== ($row['public_name'] === '')) {
         if ($row['field_name'] === '') {
           $form_state->setError($form['mapping-wrapper']['mapping'][$delta]['field_name'], $this->t('Drupal Field name required if mapped to a Open Referral property'));
         }
@@ -301,7 +301,7 @@ class PropertyMappingForm extends EntityForm {
    * {@inheritdoc}
    */
   public function save(array $form, FormStateInterface $form_state) {
-    if ($this->entity->isNew() && !empty($form_state->getValue('entity_type')) && !empty($form_state->getValue('bundle'))) {
+    if ($this->entity->isNew() && (strlen($form_state->getValue('entity_type')) && strlen($form_state->getValue('bundle')))) {
       $this->entity->setOriginalId($form_state->getValue('entity_type') . '.' . $form_state->getValue('bundle'));
     }
     $result = parent::save($form, $form_state);

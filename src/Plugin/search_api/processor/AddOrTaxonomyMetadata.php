@@ -4,7 +4,6 @@ namespace Drupal\localgov_openreferral\Plugin\search_api\processor;
 
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
-use Drupal\Core\Entity\EntityInterface;
 use Drupal\localgov_openreferral\MappingInformation;
 use Drupal\search_api\Datasource\DatasourceInterface;
 use Drupal\search_api\Item\ItemInterface;

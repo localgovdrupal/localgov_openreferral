@@ -190,7 +190,6 @@ abstract class GenerateMappingBase implements EventSubscriberInterface {
     // Sadly the bundle constraint isn't on the typedata destination; and
     // it's peculiar to the settings of a handler, or rather most handlers.
     // There must be a better way of doing this?
-    $settings = $field->getSettings();
     $target_type = $field->getSetting('target_type');
     if (!is_null($target_type)) {
       $handler_settings = $field->getSetting('handler_settings');
