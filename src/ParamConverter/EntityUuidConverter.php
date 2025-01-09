@@ -77,7 +77,7 @@ class EntityUuidConverter extends EntityConverter {
   public function applies($definition, $name, Route $route) {
     return (
       strpos($route->getPath(), '/openreferral/v1/') === 0 &&
-      !empty($definition['type']) && strpos($definition['type'], 'entity') === 0
+      isset($definition['type']) && strpos($definition['type'], 'entity') === 0
     );
   }
 

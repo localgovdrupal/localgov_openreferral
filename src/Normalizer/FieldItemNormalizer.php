@@ -53,13 +53,13 @@ class FieldItemNormalizer extends NormalizerBase {
     assert($field_item instanceof FieldItemInterface);
     /** @var \Drupal\Core\TypedData\TypedDataInterface $property */
     $values = [];
-    if (!empty($field_item->getProperties(TRUE))) {
+    if (count($field_item->getProperties(TRUE))) {
       // We normalize each individual value, so each can do their own casting,
       // if needed.
       $field_properties = TypedDataInternalPropertiesHelper::getNonInternalProperties($field_item);
-      if (!empty($context['field'])) {
+      if (array_key_exists('field', $context) && count($context['field'])) {
         $context_property = explode(':', $context['field']['field_name'], 3);
-        if (!empty($context_property[1])) {
+        if (isset($context_property[1])) {
           $field_properties = [$context_property[1] => $field_properties[$context_property[1]]];
         }
       }

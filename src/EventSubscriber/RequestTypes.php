@@ -25,6 +25,7 @@ class RequestTypes implements EventSubscriberInterface {
    * Implements \Symfony\Component\EventDispatcher\EventSubscriberInterface::getSubscribedEvents().
    */
   public static function getSubscribedEvents() {
+    $events = [];
     $events[KernelEvents::REQUEST][] = ['onKernelRequest'];
     return $events;
   }

@@ -2,6 +2,8 @@
 
 namespace Drupal\localgov_openreferral\Plugin\search_api\processor;
 
+use Drupal\Core\Config\Entity\ConfigEntityInterface;
+use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\localgov_openreferral\MappingInformation;
 use Drupal\search_api\Datasource\DatasourceInterface;
@@ -52,7 +54,7 @@ class AddOrTaxonomyMetadata extends ProcessorPluginBase {
    *   The mapping information helper.
    */
   public function getMappingInformation() {
-    return $this->mappingInformation ?: \Drupal::service('localgov_openreferral.mapping_information');
+    return $this->mappingInformation ?? \Drupal::service('localgov_openreferral.mapping_information');
   }
 
   /**
@@ -102,11 +104,11 @@ class AddOrTaxonomyMetadata extends ProcessorPluginBase {
    */
   public function addFieldValues(ItemInterface $item) {
     $entity = $item->getOriginalObject()->getValue();
-    if (!($entity instanceof EntityInterface)) {
+    if (!($entity instanceof ConfigEntityInterface || $entity instanceof ContentEntityInterface)) {
       return;
     }
     $property_mapping = $this->getMappingInformation()->getPropertyMapping($entity->getEntityTypeId(), $entity->bundle(), '__root');
-    if (empty($property_mapping)) {
+    if ($property_mapping === []) {
       return;
     }
 
@@ -123,7 +125,7 @@ class AddOrTaxonomyMetadata extends ProcessorPluginBase {
     foreach (array_column($taxonomy_properties, 'field_name') as $field_name) {
       // @todo incorrect configuration: Log if ≠ EntityReferenceFieldItemList
       //   or/and make sure it's not possible by validating elsewhere?
-      foreach ($entity->$field_name->referencedEntities() as $term) {
+      foreach ($entity->get($field_name)->referencedEntities() as $term) {
         $term_map = $this->getMappingInformation()->getPropertyMapping($term->getEntityTypeId(), $term->bundle(), '__root');
         if ($term_map) {
           $vocabularies[] = $this->getMappingInformation()->getPublicDataType($term->getEntityTypeId(), $term->getEntityTypeId(), $term->bundle()) ?? $term->bundle();
@@ -134,7 +136,7 @@ class AddOrTaxonomyMetadata extends ProcessorPluginBase {
       }
     }
 
-    if (!empty($vocabularies)) {
+    if (count($vocabularies)) {
       $fields = $item->getFields(FALSE);
       $fields = $this->getFieldsHelper()
         ->filterForPropertyPath($fields, NULL, 'localgov_openreferral_vocabulary');
@@ -145,7 +147,7 @@ class AddOrTaxonomyMetadata extends ProcessorPluginBase {
       }
     }
 
-    if (!empty($taxonomies)) {
+    if (count($taxonomies)) {
       $fields = $item->getFields(FALSE);
       $fields = $this->getFieldsHelper()
         ->filterForPropertyPath($fields, NULL, 'localgov_openreferral_taxonomy');

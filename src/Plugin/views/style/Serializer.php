@@ -62,7 +62,7 @@ class Serializer extends ViewsSerializer {
       $content_type = $this->displayHandler->getContentType();
     }
     else {
-      $content_type = !empty($this->options['formats']) ? reset($this->options['formats']) : 'json';
+      $content_type = isset($this->options['formats']) ? reset($this->options['formats']) : 'json';
     }
 
     $pagination = $this->pagination($rows);

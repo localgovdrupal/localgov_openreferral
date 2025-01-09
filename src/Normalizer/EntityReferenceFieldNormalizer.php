@@ -65,7 +65,7 @@ class EntityReferenceFieldNormalizer extends NormalizerBase {
 
     $parent = $field->getEntity();
     $parent_type = $this->mappingInformation->getPublicType($parent->getEntityTypeId(), $parent->bundle());
-    if (!empty($reference_parent[$context['field']['public_name']])) {
+    if (isset($reference_parent[$context['field']['public_name']])) {
       $direction = $reference_parent[$context['field']['public_name']] == $parent_type;
 
       foreach ($field->referencedEntities() as $entity) {
@@ -87,7 +87,7 @@ class EntityReferenceFieldNormalizer extends NormalizerBase {
         $attributes[] = $attribute;
       }
     }
-    elseif (!empty($reference_single[$context['field']['public_name']])) {
+    elseif (isset($reference_single[$context['field']['public_name']])) {
       $refrenced_entities = $field->referencedEntities();
       if ($entity = reset($refrenced_entities)) {
         $this->addCacheableDependency($context, $entity);

@@ -28,10 +28,10 @@ class ConfigEntityNormalizer extends NormalizerBase {
   public function normalize($object, $format = NULL, array $context = []): array {
     $attributes = static::getDataWithoutInternals($object->toArray());
 
-    if (!empty($context['field'])) {
+    if (array_key_exists('field', $context) && count($context['field'])) {
       [, $field_properties] = explode(':', $context['field']['field_name'], 2);
     }
-    if (!empty($field_properties)) {
+    if (isset($field_properties)) {
       $attributes = $attributes[$field_properties];
     }
 
