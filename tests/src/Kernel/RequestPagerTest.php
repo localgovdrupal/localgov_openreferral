@@ -31,7 +31,7 @@ class RequestPagerTest extends CoreRequestPagerTest {
 
     $pager_params = $this->container->get('pager.parameters');
 
-    $this->assertEquals(0, $pager_params->findPage(0));
+    static::assertEquals(0, $pager_params->findPage(0));
   }
 
 }

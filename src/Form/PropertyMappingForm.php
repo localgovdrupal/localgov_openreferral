@@ -105,7 +105,7 @@ class PropertyMappingForm extends EntityForm {
     $form['public_type'] = [
       '#type' => 'select',
       '#title' => $this->t('Open Referral type'),
-      '#default_value' => $this->entity->getPublicType() ?: NULL,
+      '#default_value' => $this->entity->getPublicType(),
       // @todo extend this list as we know they normalize fine.
       //   Move to a central location rather than tucked away here.
       '#options' => [
@@ -179,7 +179,7 @@ class PropertyMappingForm extends EntityForm {
     $user_input = $form_state->getUserInput();
     if ($this->entity->isNew()) {
       $bundle_options = ['' => ''];
-      if (!empty($user_input['entity_type'])) {
+      if (array_key_exists('entity_type', $user_input) && $user_input['entity_type'] !== '') {
         $bundle_info = $this->entityBundleInfo->getAllBundleInfo();
         $bundle_options = array_combine(array_keys($bundle_info[$user_input['entity_type']]), array_keys($bundle_info[$user_input['entity_type']]));
       }
@@ -195,6 +195,7 @@ class PropertyMappingForm extends EntityForm {
       ];
     }
 
+    // @todo is this [] when empty?
     if (empty($user_input['mapping'])) {
       $user_input['mapping'] = $this->entity->getMapping('default');
       $user_input['mapping'][] = [
@@ -210,7 +211,6 @@ class PropertyMappingForm extends EntityForm {
         $this->t('Open Referral property'),
       ],
     ];
-    $delta = 0;
     foreach ($user_input['mapping'] as $delta => $mapping) {
       $form['mapping-wrapper']['mapping'][$delta]['field_name'] = [
         '#type' => 'textfield',
@@ -252,9 +252,9 @@ class PropertyMappingForm extends EntityForm {
     $user_input = $form_state->getUserInput();
     $event = new GenerateEntityMapping($form_state->getValue('entity_type'), $form_state->getValue('bundle'), $form_state->getValue('public_type'));
     $event->mapping = array_filter($user_input['mapping'], function ($value) {
-      return !(empty($value['field_name']) && empty($value['public_name']));
+      return ($value['field_name'] !== '') && ($value['public_name'] === '');
     });
-    $this->eventDispatcher->dispatch($event::GENERATE, $event);
+    $this->eventDispatcher->dispatch($event, $event::GENERATE);
     $user_input['mapping'] = $event->mapping;
     $user_input['mapping'][] = [
       'field_name' => '',
@@ -286,8 +286,8 @@ class PropertyMappingForm extends EntityForm {
     parent::validateForm($form, $form_state);
 
     foreach ($form_state->getUserInput()['mapping'] as $delta => $row) {
-      if (empty($row['field_name']) != empty($row['public_name'])) {
-        if (empty($row['field_name'])) {
+      if (($row['field_name'] === '') !== ($row['public_name'] === '')) {
+        if ($row['field_name'] === '') {
           $form_state->setError($form['mapping-wrapper']['mapping'][$delta]['field_name'], $this->t('Drupal Field name required if mapped to a Open Referral property'));
         }
         else {
@@ -301,7 +301,7 @@ class PropertyMappingForm extends EntityForm {
    * {@inheritdoc}
    */
   public function save(array $form, FormStateInterface $form_state) {
-    if ($this->entity->isNew() && !empty($form_state->getValue('entity_type')) && !empty($form_state->getValue('bundle'))) {
+    if ($this->entity->isNew() && (strlen($form_state->getValue('entity_type')) && strlen($form_state->getValue('bundle')))) {
       $this->entity->setOriginalId($form_state->getValue('entity_type') . '.' . $form_state->getValue('bundle'));
     }
     $result = parent::save($form, $form_state);
@@ -322,7 +322,7 @@ class PropertyMappingForm extends EntityForm {
 
     $mapping = [];
     foreach ($form_state->getValue('mapping') as $row) {
-      if (!empty($row['field_name']) && !empty($row['public_name'])) {
+      if (($row['field_name'] !== '') && ($row['public_name'] !== '')) {
         $mapping[] = [
           'field_name' => $row['field_name'],
           'public_name' => $row['public_name'],

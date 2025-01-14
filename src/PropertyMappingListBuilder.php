@@ -15,6 +15,7 @@ class PropertyMappingListBuilder extends ConfigEntityListBuilder {
    * {@inheritdoc}
    */
   public function buildHeader() {
+    $header = [];
     $header['id'] = $this->t('Machine name');
     $header['entity_type'] = $this->t('Mapped entity type');
     $header['bundle'] = $this->t('Mapped bundle');
@@ -27,6 +28,7 @@ class PropertyMappingListBuilder extends ConfigEntityListBuilder {
    */
   public function buildRow(EntityInterface $entity) {
     assert($entity instanceof PropertyMappingInterface);
+    $row = [];
     $row['id'] = $entity->id();
     $row['entity_type'] = $entity->mappedEntityType();
     $row['bundle'] = $entity->mappedBundle();

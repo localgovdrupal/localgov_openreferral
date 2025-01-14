@@ -3,6 +3,7 @@
 namespace Drupal\localgov_openreferral;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\localgov_openreferral\Entity\PropertyMapping;
 
 /**
  * Helper service for querying details about Open Referral entity mappings.
@@ -111,7 +112,7 @@ class MappingInformation {
    */
   public function getPropertyMapping($entity_type, $bundle, $context) {
     $mapping = $this->storage->load($entity_type . '.' . $bundle);
-    if (empty($mapping)) {
+    if (!($mapping instanceof PropertyMapping)) {
       return [];
     }
 
