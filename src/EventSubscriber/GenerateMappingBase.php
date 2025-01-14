@@ -51,6 +51,7 @@ abstract class GenerateMappingBase implements EventSubscriberInterface {
    * Implements \Symfony\Component\EventDispatcher\EventSubscriberInterface::getSubscribedEvents().
    */
   public static function getSubscribedEvents() {
+    $events = [];
     $events[GenerateEntityMapping::GENERATE][] = ['generateSuggestions'];
     return $events;
   }
@@ -189,19 +190,20 @@ abstract class GenerateMappingBase implements EventSubscriberInterface {
     // Sadly the bundle constraint isn't on the typedata destination; and
     // it's peculiar to the settings of a handler, or rather most handlers.
     // There must be a better way of doing this?
-    $settings = $field->getSettings();
-    if (!empty($settings['target_type'])) {
-      if (!empty($settings['handler_settings']) && is_array($settings['handler_settings']['target_bundles'])) {
-        $target_bundles = array_keys($settings['handler_settings']['target_bundles']);
+    $target_type = $field->getSetting('target_type');
+    if (!is_null($target_type)) {
+      $handler_settings = $field->getSetting('handler_settings');
+      if (!is_null($handler_settings) && is_array($handler_settings['target_bundles'])) {
+        $target_bundles = array_keys($handler_settings['target_bundles']);
       }
       else {
-        $target_bundles = array_keys($this->entityBundleInfo->getBundleInfo($settings['target_type']));
+        $target_bundles = array_keys($this->entityBundleInfo->getBundleInfo($target_type));
       }
       $openreferral_type = NULL;
       $mapping_storage = $this->entityTypeManager->getStorage('localgov_openreferral_mapping');
       assert($mapping_storage instanceof PropertyMappingStorage);
       foreach ($target_bundles as $target_bundle) {
-        if ($mapping = $mapping_storage->loadByIds($settings['target_type'], $target_bundle)) {
+        if ($mapping = $mapping_storage->loadByIds($target_type, $target_bundle)) {
           assert($mapping instanceof PropertyMapping);
           if (is_null($openreferral_type) || $mapping->getPublicType() === $openreferral_type) {
             $openreferral_type = $mapping->getPublicType();

@@ -88,4 +88,4 @@ entity.localgov_openreferral_mapping.delete_form:
     _entity_form: 'localgov_openreferral_mapping.delete'
     _title: 'Delete an Open Referral mapping'
   requirements:
-          _permission: 'administer localgov_openreferral_mapping'
+    _permission: 'administer localgov_openreferral_mapping'
