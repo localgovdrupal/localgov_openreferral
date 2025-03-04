@@ -45,7 +45,7 @@ class ContentEntityNormalizer extends NormalizerBase {
   /**
    * {@inheritdoc}
    */
-  public function normalize($entity, $format = NULL, array $context = []): mixed {
+  public function normalize($entity, $format = NULL, array $context = []): array|string|int|float|bool|\ArrayObject|null {
     $context += [
       'account' => NULL,
     ];

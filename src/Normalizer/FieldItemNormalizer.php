@@ -49,7 +49,7 @@ class FieldItemNormalizer extends NormalizerBase {
   /**
    * {@inheritdoc}
    */
-  public function normalize($field_item, $format = NULL, array $context = []): mixed {
+  public function normalize($field_item, $format = NULL, array $context = []): array|string|int|float|bool|\ArrayObject|null {
     assert($field_item instanceof FieldItemInterface);
     /** @var \Drupal\Core\TypedData\TypedDataInterface $property */
     $values = [];
