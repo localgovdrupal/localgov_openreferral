@@ -107,14 +107,14 @@ class PropertyMapping extends ConfigEntityBase implements PropertyMappingInterfa
   /**
    * {@inheritdoc}
    */
-  public function mappedEntityType():? string {
+  public function mappedEntityType(): ?string {
     return $this->entity_type;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function mappedBundle():? string {
+  public function mappedBundle(): ?string {
     return $this->bundle;
   }
 
@@ -128,7 +128,7 @@ class PropertyMapping extends ConfigEntityBase implements PropertyMappingInterfa
   /**
    * {@inheritdoc}
    */
-  public function getPublicType():? string {
+  public function getPublicType(): ?string {
     return $this->public_type;
   }
 
@@ -142,7 +142,7 @@ class PropertyMapping extends ConfigEntityBase implements PropertyMappingInterfa
   /**
    * {@inheritdoc}
    */
-  public function getPublicDataType():? string {
+  public function getPublicDataType(): ?string {
     return $this->public_datatype;
   }
 
