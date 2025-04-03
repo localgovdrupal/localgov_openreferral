@@ -3,18 +3,12 @@
 namespace Drupal\localgov_openreferral\Normalizer;
 
 use Drupal\Core\Field\FieldItemInterface;
+use Drupal\address\AddressInterface;
 
 /**
  * Converts the Drupal field item object to open referral value.
  */
 class AddressFieldItemNormalizer extends FieldItemNormalizer {
-
-  /**
-   * The interface or class that this Normalizer supports.
-   *
-   * @var string
-   */
-  protected $supportedInterfaceOrClass = '\Drupal\address\AddressInterface';
 
   /**
    * {@inheritdoc}
@@ -36,6 +30,15 @@ class AddressFieldItemNormalizer extends FieldItemNormalizer {
       'country' => $field_item->country_code,
     ];
     return $values;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getSupportedTypes(?string $format): array {
+    return [
+      AddressInterface::class => TRUE,
+    ];
   }
 
 }

@@ -21,11 +21,6 @@ class ContentEntityNormalizer extends NormalizerBase {
   protected $format = ['openreferral_json'];
 
   /**
-   * {@inheritdoc}
-   */
-  protected $supportedInterfaceOrClass = ContentEntityInterface::class;
-
-  /**
    * Mapping information service.
    *
    * @var \Drupal\localgov_openreferral\MappingInformation
@@ -103,6 +98,15 @@ class ContentEntityNormalizer extends NormalizerBase {
     }
 
     return $attributes;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getSupportedTypes(?string $format): array {
+    return [
+      ContentEntityInterface::class => TRUE,
+    ];
   }
 
 }

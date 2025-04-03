@@ -19,11 +19,6 @@ class EntityReferenceFieldNormalizer extends NormalizerBase {
   protected $format = ['openreferral_json'];
 
   /**
-   * {@inheritdoc}
-   */
-  protected $supportedInterfaceOrClass = EntityReferenceFieldItemListInterface::class;
-
-  /**
    * Mapping information service.
    *
    * @var \Drupal\localgov_openreferral\MappingInformation
@@ -116,6 +111,15 @@ class EntityReferenceFieldNormalizer extends NormalizerBase {
     }
 
     return $attributes;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getSupportedTypes(?string $format): array {
+    return [
+      EntityReferenceFieldItemListInterface::class => TRUE,
+    ];
   }
 
 }

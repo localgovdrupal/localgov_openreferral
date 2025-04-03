@@ -20,11 +20,6 @@ class ConfigEntityNormalizer extends NormalizerBase {
   /**
    * {@inheritdoc}
    */
-  protected $supportedInterfaceOrClass = ConfigEntityInterface::class;
-
-  /**
-   * {@inheritdoc}
-   */
   public function normalize($object, $format = NULL, array $context = []): array {
     $attributes = static::getDataWithoutInternals($object->toArray());
 
@@ -55,6 +50,15 @@ class ConfigEntityNormalizer extends NormalizerBase {
    */
   protected static function getDataWithoutInternals(array $data) {
     return array_diff_key($data, ['_core' => TRUE]);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getSupportedTypes(?string $format): array {
+    return [
+      ConfigEntityInterface::class => TRUE,
+    ];
   }
 
 }
