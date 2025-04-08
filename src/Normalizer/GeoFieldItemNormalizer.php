@@ -3,18 +3,12 @@
 namespace Drupal\localgov_openreferral\Normalizer;
 
 use Drupal\Core\Field\FieldItemInterface;
+use Drupal\geofield\Plugin\Field\FieldType\GeofieldItem;
 
 /**
  * Converts the Drupal field item object to open referral value.
  */
 class GeoFieldItemNormalizer extends FieldItemNormalizer {
-
-  /**
-   * The interface or class that this Normalizer supports.
-   *
-   * @var string
-   */
-  protected $supportedInterfaceOrClass = '\Drupal\geofield\Plugin\Field\FieldType\GeofieldItem';
 
   /**
    * {@inheritdoc}
@@ -32,6 +26,15 @@ class GeoFieldItemNormalizer extends FieldItemNormalizer {
     $values['latitude'] = $field_item->get('lat')->getValue();
     $values['longitude'] = $field_item->get('lon')->getValue();
     return $values;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getSupportedTypes(?string $format): array {
+    return [
+      GeofieldItem::class => TRUE,
+    ];
   }
 
 }
