@@ -23,13 +23,6 @@ class FieldItemNormalizer extends NormalizerBase {
   protected $format = ['openreferral_json'];
 
   /**
-   * The interface or class that this Normalizer supports.
-   *
-   * @var string
-   */
-  protected $supportedInterfaceOrClass = FieldItemInterface::class;
-
-  /**
    * The entity type manager.
    *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
@@ -74,6 +67,15 @@ class FieldItemNormalizer extends NormalizerBase {
       $values = $field_item->getValue();
     }
     return $values;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getSupportedTypes(?string $format): array {
+    return [
+      FieldItemInterface::class => TRUE,
+    ];
   }
 
 }

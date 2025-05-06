@@ -4,6 +4,8 @@ namespace Drupal\Tests\localgov_openreferral\Kernel;
 
 use Drupal\KernelTests\Core\Pager\RequestPagerTest as CoreRequestPagerTest;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 
 /**
  * Tests decorated Pager Parameters.
@@ -24,6 +26,7 @@ class RequestPagerTest extends CoreRequestPagerTest {
    */
   public function testOpenreferralFindPage() {
     $request = Request::create('http://example.com/openreferral/v1/services', 'GET', ['page' => '1,10']);
+    $request->setSession(new Session(new MockArraySessionStorage()));
 
     /** @var \Symfony\Component\HttpFoundation\RequestStack $request_stack */
     $request_stack = $this->container->get('request_stack');
