@@ -26,7 +26,6 @@ class GenerateMappingTaxonomy extends GenerateMappingBase {
     }
 
     foreach ($this->fieldManager->getFieldDefinitions($event->getEntityTypeId(), $event->getBundle()) as $name => $field) {
-      xdebug_break();
       $single_suggestions = [];
       if ($name == 'parent' && $field->getItemDefinition()->getDataType() == 'field_item:entity_reference') {
         $single_suggestions[] = [

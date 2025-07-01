@@ -6,7 +6,7 @@
     "license": "GPL-2.0-or-later",
     "require": {
         "drupal/search_api": "^1.17",
-        "drupal/facets": "^2.0",
+        "drupal/facets": "^2.0 || ^3.0",
         "localgovdrupal/localgov_geo": "^2.0"
     }
 }
