@@ -57,7 +57,7 @@ function localgov_openreferral_entity_presave(EntityInterface $entity) {
 /**
  * Implements hook_views_pre_view().
  */
-function localgov_openreferral_views_pre_view(ViewExecutable $view, $display_id, array &$args) {
+function localgov_openreferral_views_pre_view(ViewExecutable $view, $display_id, array &$args): void {
   // If this is an open referral json output view
   // and if the query sets the items per page
   // alter the pager if it exists to use than number.
