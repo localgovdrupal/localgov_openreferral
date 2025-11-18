@@ -84,7 +84,8 @@ class ContentEntityNormalizer extends NormalizerBase {
           elseif (isset($attributes[$property['public_name']]) && is_array($attributes[$property['public_name']])) {
             $attributes[$property['public_name']] = array_merge($attributes[$property['public_name']], $normalized_field);
           }
-          else {
+          // Don't add empty arrays.
+          elseif (!is_array($normalized_field) || count($normalized_field)) {
             $attributes[$property['public_name']] = $normalized_field;
           }
         }
