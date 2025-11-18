@@ -69,6 +69,9 @@ class EntityReferenceFieldNormalizer extends NormalizerBase {
           continue;
         }
         $type = $this->mappingInformation->getPublicType($entity->getEntityTypeId(), $entity->bundle());
+        if ($type === 'unknown') {
+          continue;
+        }
         $id = $direction ?
           $parent->uuid() . '-' . $entity->uuid() :
           $entity->uuid() . '-' . $parent->uuid();
